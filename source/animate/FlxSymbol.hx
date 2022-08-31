@@ -15,22 +15,15 @@ class FlxSymbol extends FlxSprite
 	public var daFrame:Int;
 	public var nestDepth:Int;
 	public var transformMatrix:Matrix = new Matrix();
-	
 	var _skewMatrix = new Matrix();
-	
 	public var matrixExposed:Bool;
 	public var coolParse:Parsed;
-
 	public static var nestedShit:Map<Int, Array<FlxSymbol>> = new Map<Int, Array<FlxSymbol>>();
-	
 	public function new(x:Float, y:Float, coolParsed:Parsed)
 	{
 		super(x, y);
-
 		this.coolParse = coolParsed;
-
 		var hasSymbolDictionary:Bool = Reflect.hasField(coolParse, "SD");
-
 		if (hasSymbolDictionary)
 			symbolAtlasShit = parseSymbolDictionary(coolParse);
 	}
@@ -55,21 +48,16 @@ class FlxSymbol extends FlxSprite
 						{
 							var m3d = element.ASI.M3D;
 							var dumbassMatrix:Matrix = new Matrix(m3d[0], m3d[1], m3d[4], m3d[5], m3d[12], m3d[13]);
-	
 							var spr:FlxSymbol = new FlxSymbol(0, 0, coolParsed);
 							matrixExposed = true;
 							spr.frames = frames;
 							spr.frame = spr.frames.getByName(element.ASI.N);
-	
 							dumbassMatrix.concat(_matrix);
 							spr.matrixExposed = true;
 							spr.transformMatrix.concat(dumbassMatrix);
-	
 							spr.origin.set();
-
 							spr.origin.x += origin.x;
 							spr.origin.y += origin.y;
-							
 							spr.antialiasing = true;
 							spr.draw();
 						}
@@ -78,20 +66,10 @@ class FlxSymbol extends FlxSprite
 							var nestedSymbol = symbolMap.get(element.SI.SN);
 							var nestedShit:FlxSymbol = new FlxSymbol(0, 0, coolParse);
 							nestedShit.frames = frames;
-	
 							var swagMatrix:FlxMatrix = new FlxMatrix(element.SI.M3D[0], element.SI.M3D[1], element.SI.M3D[4], element.SI.M3D[5], element.SI.M3D[12], element.SI.M3D[13]);
-
 							swagMatrix.concat(_matrix);
-
 							nestedShit._matrix.concat(swagMatrix);
 							nestedShit.origin.set(element.SI.TRP.x, element.SI.TRP.y);
-
-							if (symbolAtlasShit.exists(nestedSymbol.SN))
-							{
-								// empty if statement???
-								// perhaps it was later commented out code, idfk
-							}
-
 							nestedShit.hasFrameByPass = true;
 							nestedShit.nestDepth = nestDepth + 1;
 							nestedShit.renderFrame(nestedSymbol.TL, coolParsed);
@@ -110,13 +88,10 @@ class FlxSymbol extends FlxSprite
 	function parseSymbolDictionary(coolParsed:Parsed):Map<String, String>
 	{
 		var awesomeMap:Map<String, String> = new Map();
-
 		for (symbol in coolParsed.SD.S)
 		{
 			symbolMap.set(symbol.SN, symbol);
-
 			var symbolName = symbol.SN;
-
 			for (layer in symbol.TL.L)
 			{
 				for (frame in layer.FR)
@@ -124,9 +99,7 @@ class FlxSymbol extends FlxSprite
 					for (element in frame.E)
 					{
 						if (Reflect.hasField(element, 'ASI'))
-						{
 							awesomeMap.set(symbolName, element.ASI.N);
-						}
 					}
 				}
 			}
