@@ -15,7 +15,6 @@ class FlxAnimate extends FlxSymbol
 {
 	var playingAnim:Bool = false;
 	var frameTickTypeShit:Float = 0;
-
 	override public function new(x:Float, y:Float)
 	{
 		coolParse = Json.parse(Assets.getText(Paths.getPath('images/tightBars/Animation.json', TEXT, null)));
@@ -26,7 +25,6 @@ class FlxAnimate extends FlxSymbol
 
 	/**
 	 * Parsing method for Animate texture atlases
-	 * 
 	 * @param Source 		  The image source (can be `FlxGraphic`, `String` or `BitmapData`).
 	 * @param Description	  Contents of the JSON file with atlas description.
 	 *                        You can get it with `Assets.getText(path/to/description.json)`.
@@ -38,53 +36,37 @@ class FlxAnimate extends FlxSymbol
 		var graphic:FlxGraphic = FlxG.bitmap.add(Source);
 		if (graphic == null)
 			return null;
-
-		// No need to parse data again
 		var frames:FlxAtlasFrames = FlxAtlasFrames.findFrame(graphic);
 		if (frames != null)
 			return frames;
-
 		if (graphic == null || Description == null)
 			return null;
-
 		frames = new FlxAtlasFrames(graphic);
-
-		trace(Description);
 		if (Assets.exists(Description))
 			Description = Assets.getText(Description);
-
 		var data:AnimateAtlas = Json.parse(Description);
-
 		for (sprites in data.ATLAS.SPRITES)
 		{
 			var spr:AnimateSpriteData = sprites.SPRITE;
-
 			var rect:FlxRect = FlxRect.get(spr.x, spr.y, spr.w, spr.h);
 			var size:Rectangle = new Rectangle(0, 0, rect.width, rect.height);
-
 			var offset = FlxPoint.get(-size.left, -size.top);
 			var sourceSize = FlxPoint.get(size.width, size.height);
-
 			frames.addAtlasFrame(rect, sourceSize, offset, spr.name);
 		}
-
 		return frames;
 	}
 
 	override function draw()
 	{
 		super.draw();
-
 		renderFrame(coolParse.AN.TL, coolParse, true);
-		
 		if (FlxG.keys.justPressed.E)
 		{
 			for (key in FlxSymbol.nestedShit.keys())
 			{
 				for (symbol in FlxSymbol.nestedShit.get(key))
-				{
 					symbol.draw();
-				}
 			}
 			FlxSymbol.nestedShit.clear();
 		}
@@ -93,31 +75,21 @@ class FlxAnimate extends FlxSymbol
 	override function update(elapsed:Float)
 	{
 		super.update(elapsed);
-
 		if (FlxG.keys.justPressed.SPACE)
-		{
 			playingAnim = !playingAnim;
-		}
-
 		if (playingAnim)
 		{
 			frameTickTypeShit += elapsed;
-			
 			if (frameTickTypeShit >= 1 / 24)
 			{
 				changeFrame(1);
 				frameTickTypeShit = 0;
 			}
 		}
-
 		if (FlxG.keys.justPressed.RIGHT)
-		{
 			changeFrame(1);
-		}
 		if (FlxG.keys.justPressed.LEFT)
-		{
 			changeFrame(-1);
-		}
 	}
 }
 

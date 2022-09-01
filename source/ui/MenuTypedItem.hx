@@ -5,7 +5,6 @@ import flixel.util.FlxColor;
 class MenuTypedItem extends MenuItem
 {
 	public var label(default, set):AtlasText;
-
 	override public function new(?x:Float = 0, ?y:Float = 0, atlasText:AtlasText, text:String, ?callback:Dynamic)
 	{
 		super(x, y, text, callback);

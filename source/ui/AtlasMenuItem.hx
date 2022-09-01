@@ -5,7 +5,6 @@ import flixel.graphics.frames.FlxAtlasFrames;
 class AtlasMenuItem extends MenuItem
 {	
 	var atlas:FlxAtlasFrames;
-
 	public function new(?x:Float = 0, ?y:Float = 0, name:String, atlas:FlxAtlasFrames, ?callback:Dynamic)
 	{
 		this.atlas = atlas;
@@ -27,19 +26,13 @@ class AtlasMenuItem extends MenuItem
 	}
 
 	override public function idle()
-	{
 		changeAnim('idle');
-	}
 
 	override public function select()
-	{
 		changeAnim('selected');
-	}
 
 	override function get_selected()
-	{
 		return animation.curAnim != null ? animation.curAnim.name == 'selected' : false;
-	}
 
 	override function destroy()
 	{

@@ -6,7 +6,6 @@ import flixel.graphics.frames.FlxAtlasFrames;
 class AtlasChar extends FlxSprite
 {
 	public var char(default, set):String;
-
 	override public function new(?x:Float = 0, ?y:Float = 0, atlas:FlxAtlasFrames, char:String)
 	{
 		super(x, y);

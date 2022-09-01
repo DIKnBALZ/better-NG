@@ -5,7 +5,6 @@ import flixel.FlxG;
 class OptionsMenu extends Page
 {
 	var items:TextMenuList;
-
 	override public function new(showDonate:Bool)
 	{
 		super();
@@ -19,17 +18,7 @@ class OptionsMenu extends Page
 			onSwitch.dispatch(PageName.Controls);
 		});
 		if (showDonate)
-		{
 			createItem('donate', selectDonate, true);
-		}
-		// if (NG.core != null && NG.core.loggedIn)
-		// {
-		// 	createItem('logout', selectLogout);
-		// }
-		// else
-		// {
-		// 	createItem('login', selectLogin);
-		// }
 		createItem('exit', exit);
 	}
 
@@ -48,9 +37,7 @@ class OptionsMenu extends Page
 	}
 
 	public function hasMultipleOptions()
-	{
 		return items.length > 2;
-	}
 
 	function selectDonate()
 	{
@@ -60,48 +47,4 @@ class OptionsMenu extends Page
 		FlxG.openURL('https://ninja-muffin24.itch.io/funkin');
 		#end
 	}
-
-	// function selectLogin()
-	// {
-	// 	openNgPrompt(NgPrompt.showLogin());
-	// }
-
-	// function selectLogout()
-	// {
-	// 	openNgPrompt(NgPrompt.showLogout());
-	// }
-
-	// function openNgPrompt(prompt:Prompt, ?callback:Dynamic)
-	// {
-	// 	var func:Dynamic = checkLoginStatus();
-	// 	if (callback != null)
-	// 	{
-	// 		func = function()
-	// 		{
-	// 			checkLoginStatus();
-	// 			callback();
-	// 		};
-	// 	}
-	// 	openPrompt(prompt, func);
-	// }
-
-	// function checkLoginStatus()
-	// {
-	// 	var hasLogout:Bool = items.has('logout');
-	// 	if (hasLogout)
-	// 	{
-	// 		if (NG.core != null)
-	// 		{
-	// 			if (NG.core.loggedIn)
-	// 			{
-	// 				if (!hasLogout && NG.core != null && NG.core.loggedIn)
-	// 					items.resetItem('logout', 'login', selectLogin);
-	// 			}
-	// 			else
-	// 			{
-	// 				items.resetItem('login', 'logout', selectLogout);
-	// 			}
-	// 		}
-	// 	}
-	// }
 }

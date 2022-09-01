@@ -10,7 +10,6 @@ import haxe.ds.StringMap;
 class PreferencesMenu extends Page
 {
 	public static var preferences:StringMap<Dynamic> = new StringMap<Dynamic>();
-
 	var checkboxes:Array<CheckboxThingie> = [];
 	var menuCamera:FlxCamera;
 	var items:TextMenuList;
@@ -32,9 +31,7 @@ class PreferencesMenu extends Page
 		createPrefItem('Auto Pause', 'auto-pause', false);
 		camFollow = new FlxObject(FlxG.width / 2, 0, 140, 70);
 		if (items != null)
-		{
 			camFollow.y = items.members[items.selectedIndex].y;
-		}
 		menuCamera.follow(camFollow, null, 0.06);
 		menuCamera.deadzone.set(0, 160, menuCamera.width, 40);
 		menuCamera.minScrollY = 0;
@@ -45,9 +42,7 @@ class PreferencesMenu extends Page
 	}
 
 	public static function getPref(pref:String)
-	{
 		return preferences.get(pref);
-	}
 
 	public static function initPrefs()
 	{
@@ -59,9 +54,7 @@ class PreferencesMenu extends Page
 		preferenceCheck('auto-pause', false);
 		preferenceCheck('master-volume', 1);
 		if (!getPref('fps-counter'))
-		{
 			Lib.current.stage.removeChild(Main.fpsCounter);
-		}
 		FlxG.autoPause = getPref('auto-pause');
 	}
 
@@ -73,9 +66,7 @@ class PreferencesMenu extends Page
 			trace('set preference!');
 		}
 		else
-		{
 			trace('found preference: ' + Std.string(preferences.get(identifier)));
-		}
 	}
 
 	public function createPrefItem(label:String, identifier:String, value:Dynamic)
@@ -84,22 +75,14 @@ class PreferencesMenu extends Page
 		{
 			preferenceCheck(identifier, value);
 			if (Type.typeof(value) == TBool)
-			{
 				prefToggle(identifier);
-			}
 			else
-			{
 				trace('swag');
-			}
 		});
 		if (Type.typeof(value) == TBool)
-		{
 			createCheckbox(identifier);
-		}
 		else
-		{
 			trace('swag');
-		}
 		trace(Type.typeof(value));
 	}
 

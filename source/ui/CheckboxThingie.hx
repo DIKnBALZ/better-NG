@@ -5,7 +5,6 @@ import flixel.FlxSprite;
 class CheckboxThingie extends FlxSprite
 {
 	public var daValue(default, set):Bool;
-
 	override public function new(x:Float, y:Float, state:Bool = false)
 	{
 		super(x, y);

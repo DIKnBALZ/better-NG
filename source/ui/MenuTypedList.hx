@@ -9,16 +9,13 @@ import haxe.ds.StringMap;
 class MenuTypedList<T:MenuItem> extends FlxTypedGroup<T>
 {
 	public var selectedIndex:Int = 0;
-	
 	public var onChange:FlxTypedSignal<T->Void> = new FlxTypedSignal<T->Void>();
 	public var onAcceptPress:FlxTypedSignal<T->Void> = new FlxTypedSignal<T->Void>();
-
 	public var enabled:Bool = true;
 	public var navControls:NavControls;
 	public var wrapMode:WrapMode = Both;
 	public var byName:StringMap<T> = new StringMap<T>();
 	public var busy:Bool = false;
-
 	public function new(dir:NavControls = Vertical, ?wrapDir:WrapMode)
 	{
 		navControls = dir;
@@ -44,9 +41,7 @@ class MenuTypedList<T:MenuItem> extends FlxTypedGroup<T>
 	public function addItem(name:String, item:T)
 	{
 		if (selectedIndex == length)
-		{
 			item.select();
-		}
 		byName.set(name, item);
 		return add(item);
 	}
@@ -54,9 +49,7 @@ class MenuTypedList<T:MenuItem> extends FlxTypedGroup<T>
 	public function resetItem(name:String, newName:String, callback:Dynamic = null)
 	{
 		if (!byName.exists(name))
-		{
 			throw "No item named:" + name;
-		}
 		var item:T = byName.get(name);
 		byName.remove(name);
 		byName.set(newName, item);
@@ -112,9 +105,7 @@ class MenuTypedList<T:MenuItem> extends FlxTypedGroup<T>
 				selectItem(nextIndex);
 			}
 			if (controls.ACCEPT)
-			{
 				accept();
-			}
 		}
 	}
 
@@ -157,9 +148,7 @@ class MenuTypedList<T:MenuItem> extends FlxTypedGroup<T>
 		var selected:T = members[selectedIndex];
 		onAcceptPress.dispatch(selected);
 		if (selected.fireInstantly)
-		{
 			selected.callback();
-		}
 		else
 		{
 			busy = true;
@@ -181,14 +170,10 @@ class MenuTypedList<T:MenuItem> extends FlxTypedGroup<T>
 	}
 
 	public function has(name:String)
-	{
 		return byName.exists(name);
-	}
 
 	public function getItem(name:String)
-	{
 		return byName.get(name);
-	}
 
 	override function destroy()
 	{
