@@ -15,7 +15,6 @@ class ControlsMenu extends Page
 {
 	public static var controlList:Array<Control> = Control.createAll();
 	public static var controlGroups:Array<Array<Control>> = [[NOTE_UP, NOTE_DOWN, NOTE_LEFT, NOTE_RIGHT], [UI_UP, UI_DOWN, UI_LEFT, UI_RIGHT, ACCEPT, BACK]];
-
 	var currentDevice:Device = Device.Keys;
 	var deviceList:TextMenuList;
 	var deviceListSelected:Bool = false;
@@ -25,14 +24,11 @@ class ControlsMenu extends Page
 	var camFollow:FlxObject;
 	var labels:FlxTypedGroup<AtlasText>;
 	var prompt:Prompt;
-
 	override public function new()
 	{
 		var array:Array<Array<InputItem>> = [];
 		for (i in 0...controlGroups.length)
-		{
 			array.push([]);
-		}
 		itemGroups = array;
 		super();
 		menuCamera = new FlxCamera();
@@ -86,9 +82,7 @@ class ControlsMenu extends Page
 				ypos += 70;
 			}
 			if (curSection != null && name.indexOf(curSection) == 0)
-			{
 				name = name.substr(curSection.length);
-			}
 			var text:AtlasText = new AtlasText(150, ypos, name, Bold);
 			text = labels.add(text);
 			text.alpha = 0.6;
@@ -104,9 +98,7 @@ class ControlsMenu extends Page
 			controlGrid.enabled = false;
 		}
 		else
-		{
 			camFollow.y = controlGrid.members[controlGrid.selectedIndex].y;
-		}
 		menuCamera.follow(camFollow, null, 0.06);
 		menuCamera.deadzone.set(0, 100, menuCamera.width, menuCamera.height - 200);
 		menuCamera.minScrollY = 0;
@@ -160,18 +152,12 @@ class ControlsMenu extends Page
 	{
 		currentDevice = dev;
 		for (item in controlGrid.members)
-		{
 			item.updateDevice(currentDevice);
-		}
 		var cancelBtn:String = dev == Device.Keys ? 'Escape' : 'Back';
 		if (dev == Device.Keys)
-		{
 			prompt.setText('\nPress any key to rebind\n\n\n\n    ' + cancelBtn + ' to cancel');
-		}
 		else
-		{
 			prompt.setText('\nPress any button\n   to rebind\n\n\n ' + cancelBtn + ' to cancel');
-		}
 		controlGrid.members[controlGrid.selectedIndex].select();
 		labels.members[Std.int(controlGrid.selectedIndex / 2)].alpha = 1;
 		controlGrid.enabled = true;
@@ -246,9 +232,7 @@ class ControlsMenu extends Page
 		prompt.exists = false;
 		controlGrid.enabled = true;
 		if (deviceList == null)
-		{
 			canExit = true;
-		}
 	}
 
 	override public function destroy()
@@ -265,17 +249,13 @@ class ControlsMenu extends Page
 		{
 			controlGrid.enabled = false;
 			if (deviceList != null)
-			{
 				deviceList.enabled = false;
-			}
 		}
 		else
 		{
 			controlGrid.enabled = !deviceListSelected;
 			if (deviceList != null)
-			{
 				deviceList.enabled = deviceListSelected;
-			}
 		}
 		return super.set_enabled(state);
 	}

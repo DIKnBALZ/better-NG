@@ -8,22 +8,17 @@ class Page extends FlxTypedGroup<Dynamic>
 {
 	public var onSwitch:FlxTypedSignal<PageName->Void> = new FlxTypedSignal<PageName->Void>();
 	public var onExit:FlxTypedSignal<Void->Void> = new FlxTypedSignal<Void->Void>();
-
 	public var enabled(default, set):Bool = true;
 	public var canExit:Bool = true;
 
 	public function exit()
-	{
 		onExit.dispatch();
-	}
 
 	override function update(elapsed:Float)
 	{
 		super.update(elapsed);
 		if (enabled)
-		{
 			updateEnabled(elapsed);
-		}
 	}
 
 	function updateEnabled(elapsed:Float)
@@ -36,9 +31,7 @@ class Page extends FlxTypedGroup<Dynamic>
 	}
 
 	function set_enabled(state:Bool)
-	{
 		return enabled = state;
-	}
 
 	public function openPrompt(prompt:Prompt, callback:Dynamic)
 	{

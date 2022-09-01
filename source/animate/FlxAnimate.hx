@@ -25,7 +25,6 @@ class FlxAnimate extends FlxSymbol
 
 	/**
 	 * Parsing method for Animate texture atlases
-	 * 
 	 * @param Source 		  The image source (can be `FlxGraphic`, `String` or `BitmapData`).
 	 * @param Description	  Contents of the JSON file with atlas description.
 	 *                        You can get it with `Assets.getText(path/to/description.json)`.
@@ -37,18 +36,14 @@ class FlxAnimate extends FlxSymbol
 		var graphic:FlxGraphic = FlxG.bitmap.add(Source);
 		if (graphic == null)
 			return null;
-
 		var frames:FlxAtlasFrames = FlxAtlasFrames.findFrame(graphic);
 		if (frames != null)
 			return frames;
-
 		if (graphic == null || Description == null)
 			return null;
-
 		frames = new FlxAtlasFrames(graphic);
 		if (Assets.exists(Description))
 			Description = Assets.getText(Description);
-
 		var data:AnimateAtlas = Json.parse(Description);
 		for (sprites in data.ATLAS.SPRITES)
 		{
@@ -82,7 +77,6 @@ class FlxAnimate extends FlxSymbol
 		super.update(elapsed);
 		if (FlxG.keys.justPressed.SPACE)
 			playingAnim = !playingAnim;
-
 		if (playingAnim)
 		{
 			frameTickTypeShit += elapsed;

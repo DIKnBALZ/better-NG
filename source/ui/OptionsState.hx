@@ -58,14 +58,10 @@ class OptionsState extends MusicBeatState
 	function setPage(name:PageName)
 	{
 		if (pages.exists(currentName))
-		{
 			currentPage.exists = false;
-		}
 		currentName = name;
 		if (pages.exists(currentName))
-		{
 			currentPage.exists = true;
-		}
 	}
 
 	override function finishTransIn()
@@ -75,9 +71,7 @@ class OptionsState extends MusicBeatState
 	}
 
 	function switchPage(name:PageName)
-	{
 		setPage(name);
-	}
 
 	function exitToMainMenu()
 	{

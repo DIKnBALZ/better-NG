@@ -8,12 +8,10 @@ import flixel.FlxSubState;
 class Prompt extends FlxSubState
 {
 	public static var MARGIN:Float = 100;
-	
 	var style:ButtonStyle;
 	var buttons:TextMenuList;
 	var field:AtlasText;
 	public var back:FlxSprite;
-
 	public var onYes:Dynamic = null;
 	public var onNo:Dynamic = null;
 	
@@ -46,9 +44,7 @@ class Prompt extends FlxSubState
 	}
 
 	public function createBgFromMargin(?margin:Float = 100, color:FlxColor = 0xFF808080)
-	{
 		createBg(Std.int(FlxG.width - 2 * margin), Std.int(FlxG.height - 2 * margin), color);
-	}
 
 	public function setButtons(style:ButtonStyle)
 	{
@@ -62,9 +58,7 @@ class Prompt extends FlxSubState
 	public function createButtons()
 	{
 		while (buttons.members.length > 0)
-		{
 			buttons.remove(buttons.members[0], true).destroy();
-		}
 		switch (style)
 		{
 			case Ok:

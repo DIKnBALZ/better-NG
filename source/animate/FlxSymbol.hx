@@ -29,9 +29,7 @@ class FlxSymbol extends FlxSprite
 	}
 
 	public override function draw()
-	{
 		super.draw();
-	}
 
 	function renderFrame(TL:Timeline, coolParsed:Parsed, ?traceShit:Bool = false)
 	{
@@ -81,9 +79,7 @@ class FlxSymbol extends FlxSprite
 	}
 
 	public function changeFrame(frameChange:Int = 0):Void
-	{
 		daFrame += frameChange;
-	}
 
 	function parseSymbolDictionary(coolParsed:Parsed):Map<String, String>
 	{
@@ -104,7 +100,6 @@ class FlxSymbol extends FlxSprite
 				}
 			}
 		}
-
 		return awesomeMap;
 	}
 
@@ -113,7 +108,6 @@ class FlxSymbol extends FlxSprite
 		_frame.prepareMatrix(_matrix, FlxFrameAngle.ANGLE_0, checkFlipX(), checkFlipY());
 		_matrix.translate(-origin.x, -origin.y);
 		_matrix.scale(scale.x, scale.y);
-
 		if (matrixExposed)
 			_matrix.concat(transformMatrix);
 		else
@@ -121,23 +115,18 @@ class FlxSymbol extends FlxSprite
 			if (bakedRotationAngle <= 0)
 			{
 				updateTrig();
-	
 				if (angle != 0)
 					_matrix.rotateWithTrig(_cosAngle, _sinAngle);
 			}
 			_matrix.concat(_skewMatrix);
 		}
-		
 		_point.addPoint(origin);
-
 		if (isPixelPerfectRender(camera))
 		{
 			_point.x = Math.floor(_point.x);
 			_point.y = Math.floor(_point.y);
 		}
-
 		_matrix.translate(_point.x, _point.y);
-
 		camera.drawPixels(_frame, framePixels, _matrix, colorTransform, blend, antialiasing);
 	}
 }
@@ -149,100 +138,65 @@ typedef Parsed =
 	var MD:AtlasMetaData;
 }
 
-/**
- * Basically treated like one big symbol
- */
- typedef Animation =
- {
-	 /**
-	  * Symbol Name
-	  */
-	 var SN:String;
+typedef Animation = // Basically treated like one big symbol
+{
+	var SN:String; // Symbol Name
+	var TL:Timeline;
+	var STI:Dynamic; // Symbol Type Instance / NOT used in symbols, only the main AN animation.
+}
  
-	 var TL:Timeline;
+typedef SymbolDictionary =
+{
+	var S:Array<Animation>;
+}
  
-	 /**
-	  * Symbol Type Instance
-	  * NOT used in symbols, only the main AN animation.
-	  */
-	 var STI:Dynamic;
- }
+typedef Timeline =
+{
+	var L:Array<Layer>; // Layers
+}
  
- typedef SymbolDictionary =
- {
-	 var S:Array<Animation>;
- }
+typedef Layer =
+{
+	var LN:String;
+	var FR:Array<Frame>; // Frames
+}
  
- typedef Timeline =
- {
-	 /**
-	  * Layers
-	  */
-	 var L:Array<Layer>;
- }
+typedef Frame =
+{
+	var I:Int;
+	var DU:Int; // Duration, in frames
+	var E:Array<Element>; // Elements
+}
  
- typedef Layer =
- {
-	 var LN:String;
+typedef Element =
+{
+	var SI:SymbolInstance;
+	var ASI:AtlasSymbolInstance;
+}
+
+typedef SymbolInstance = // Symbol instance, for SYMBOLS and refers to SYMBOLS
+{
+	var SN:String;
+	var ST:String; // SymbolType (Graphic, Movieclip, Button)
+	var FFP:Int;
+	var LP:String;
+	var TRP:TransformationPoint;
+	var M3D:Array<Float>;
+}
  
-	 /**
-	  * Frames
-	  */
-	 var FR:Array<Frame>;
- }
+typedef AtlasSymbolInstance =
+{
+	var N:String;
+	var M3D:Array<Float>;
+}
  
- typedef Frame =
- {
-	 var I:Int;
+typedef TransformationPoint =
+{
+	var x:Float;
+	var y:Float;
+}
  
-	 /**
-	  * Duration, in frames
-	  */
-	 var DU:Int;
- 
-	 /**
-	  * Elements
-	  */
-	 var E:Array<Element>;
- }
- 
- typedef Element =
- {
-	 var SI:SymbolInstance;
-	 var ASI:AtlasSymbolInstance;
- }
- 
- /**
-  * Symbol instance, for SYMBOLS and refers to SYMBOLS
-  */
- typedef SymbolInstance =
- {
-	 var SN:String;
- 
-	 /**
-	  * SymbolType (Graphic, Movieclip, Button)
-	  */
-	 var ST:String;
- 
-	 var FFP:Int;
-	 var LP:String;
-	 var TRP:TransformationPoint;
-	 var M3D:Array<Float>;
- }
- 
- typedef AtlasSymbolInstance =
- {
-	 var N:String;
-	 var M3D:Array<Float>;
- }
- 
- typedef TransformationPoint =
- {
-	 var x:Float;
-	 var y:Float;
- }
- 
- typedef AtlasMetaData =
- {
-	 var FRT:Int;
- }
+typedef AtlasMetaData =
+{
+	var FRT:Int;
+}
