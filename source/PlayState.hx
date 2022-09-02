@@ -123,20 +123,20 @@ class PlayState extends MusicBeatState {
 	#end
 
 	override public function create() {
-		if (FlxG.sound.music != null) FlxG.sound.music.stop();
-		var instPath = Paths.inst(SONG.song.toLowerCase());
-		if (OpenFlAssets.exists(instPath, SOUND) || OpenFlAssets.exists(instPath, MUSIC)) OpenFlAssets.getSound(instPath, true);
-		var vocalsPath = Paths.voices(SONG.song.toLowerCase());
-		if (OpenFlAssets.exists(vocalsPath, SOUND) || OpenFlAssets.exists(vocalsPath, MUSIC)) OpenFlAssets.getSound(vocalsPath, true);
-
 		camGame = new FlxCamera();
 		camHUD = new FlxCamera();
 		camHUD.bgColor.alpha = 0;
 		FlxG.cameras.reset(camGame);
 		FlxG.cameras.add(camHUD, false);
 
-		grpNoteSplashes = new FlxTypedGroup<NoteSplash>();
+		if (FlxG.sound.music != null) FlxG.sound.music.stop();
+		var instPath = Paths.inst(SONG.song.toLowerCase());
+		if (OpenFlAssets.exists(instPath, SOUND) || OpenFlAssets.exists(instPath, MUSIC)) OpenFlAssets.getSound(instPath, true);
+		var vocalsPath = Paths.voices(SONG.song.toLowerCase());
+		if (OpenFlAssets.exists(vocalsPath, SOUND) || OpenFlAssets.exists(vocalsPath, MUSIC)) OpenFlAssets.getSound(vocalsPath, true);
+
 		var splash:NoteSplash = new NoteSplash(100, 100, 0);
+		grpNoteSplashes = new FlxTypedGroup<NoteSplash>();
 		grpNoteSplashes.add(splash);
 		splash.alpha = 0.1;
 
@@ -183,6 +183,10 @@ class PlayState extends MusicBeatState {
 			DiscordClient.changePresence(detailsText, SONG.song + " (" + storyDifficultyText + ")", iconRPC);
 		#end
 
+		var gfVersion:String = 'gf';
+		gf = new Character(400, 130, gfVersion);
+		dad = new Character(100, 100, SONG.player2);
+		boyfriend = new Boyfriend(770, 450, SONG.player1);
 		switch (SONG.song.toLowerCase()) {
 			case 'spookeez' | 'monster' | 'south':
 				curStage = 'spooky';
@@ -239,6 +243,9 @@ class PlayState extends MusicBeatState {
 			case 'milf' | 'satin-panties' | 'high':
 				curStage = 'limo';
 				defaultCamZoom = 0.90;
+				gfVersion = 'gf-car';
+
+				trace('bruh 1');
 
 				var skyBG:FlxSprite = new FlxSprite(-120, -50).loadGraphic(Paths.image('limo/limoSunset'));
 				skyBG.scrollFactor.set(0.1, 0.1);
@@ -253,6 +260,8 @@ class PlayState extends MusicBeatState {
 
 				grpLimoDancers = new FlxTypedGroup<BackgroundDancer>();
 				add(grpLimoDancers);
+
+				trace('bruh 2');
 
 				for (i in 0...5) {
 					var dancer:BackgroundDancer = new BackgroundDancer((370 * i) + 130, bgLimo.y - 400);
@@ -269,10 +278,20 @@ class PlayState extends MusicBeatState {
 				limo.animation.play('drive');
 				limo.antialiasing = true;
 
+				trace('bruh 3');
+
 				fastCar = new FlxSprite(-300, 160).loadGraphic(Paths.image('limo/fastCarLol'));
+				
+				boyfriend.y -= 220; // HELP IT CRASHES SOMEWHERE HERE I DONT KNOW WHY FGRAHHHHH
+				boyfriend.x += 260;
+				resetFastCar();
+				add(fastCar);
+
+				trace('yuh ay');
 			case 'cocoa' | 'eggnog':
 				curStage = 'mall';
 				defaultCamZoom = 0.80;
+				gfVersion = 'gf-christmas';
 
 				var bg:FlxSprite = new FlxSprite(-1000, -500).loadGraphic(Paths.image('christmas/bgWalls'));
 				bg.antialiasing = true;
@@ -323,8 +342,11 @@ class PlayState extends MusicBeatState {
 				santa.animation.addByPrefix('idle', 'santa idle in fear', 24, false);
 				santa.antialiasing = true;
 				add(santa);
+
+				boyfriend.x += 200;
 			case 'winter-horrorland':
 				curStage = 'mallEvil';
+				gfVersion = 'gf-christmas';
 
 				var bg:FlxSprite = new FlxSprite(-400, -500).loadGraphic(Paths.image('christmas/evilBG'));
 				bg.antialiasing = true;
@@ -342,9 +364,13 @@ class PlayState extends MusicBeatState {
 				var evilSnow:FlxSprite = new FlxSprite(-200, 700).loadGraphic(Paths.image("christmas/evilSnow"));
 				evilSnow.antialiasing = true;
 				add(evilSnow);
+				
+				boyfriend.x += 320;
+				dad.y -= 80;
 			case 'senpai' | 'roses':
 				curStage = 'school';
 				var repositionShit = -200;
+				gfVersion = 'gf-pixel';
 
 				var bgSky = new FlxSprite().loadGraphic(Paths.image('weeb/weebSky'));
 				bgSky.scrollFactor.set(0.1, 0.1);
@@ -400,8 +426,14 @@ class PlayState extends MusicBeatState {
 				bgGirls.setGraphicSize(Std.int(bgGirls.width * daPixelZoom));
 				bgGirls.updateHitbox();
 				add(bgGirls);
+				
+				boyfriend.x += 200;
+				boyfriend.y += 220;
+				gf.x += 180;
+				gf.y += 300;
 			case 'thorns':
 				curStage = 'schoolEvil';
+				gfVersion = 'gf-pixel';
 
 				var waveEffectBG = new FlxWaveEffect(FlxWaveMode.ALL, 2, -1, 3, 2);
 				var waveEffectFG = new FlxWaveEffect(FlxWaveMode.ALL, 2, -1, 5, 2);
@@ -415,9 +447,18 @@ class PlayState extends MusicBeatState {
 				bg.scrollFactor.set(0.8, 0.9);
 				bg.scale.set(6, 6);
 				add(bg);
+				
+				var evilTrail = new FlxTrail(dad, null, 4, 24, 0.3, 0.069);
+				add(evilTrail);
+
+				boyfriend.x += 200;
+				boyfriend.y += 220;
+				gf.x += 180;
+				gf.y += 300;
 			case 'guns' | 'stress' | 'ugh':
 				defaultCamZoom = 0.9;
 				curStage = 'tank';
+				gfVersion = 'gf-tankmen';
 				
 				var sky:BGSprite = new BGSprite('tankSky', -400, -400, 0, 0);
 				add(sky);
@@ -480,6 +521,17 @@ class PlayState extends MusicBeatState {
 				
 				var tankdude3:BGSprite = new BGSprite('tank3', 1300, 1200, 3.5, 2.5, ['fg']);
 				foregroundSprites.add(tankdude3);
+				
+				gf.y += 10;
+				gf.x -= 30;
+				boyfriend.x += 40;
+				boyfriend.y += 0;
+				dad.y += 60;
+				dad.x -= 80;
+				if (gfVersion != 'pico-speaker') {
+					gf.x -= 170;
+					gf.y -= 75;
+				}
 			default:
 				defaultCamZoom = 0.9;
 				curStage = 'stage';
@@ -503,17 +555,7 @@ class PlayState extends MusicBeatState {
 				add(stageCurtains);
 		}
 
-		var gfVersion:String = 'gf';
-		switch (curStage) {
-			case 'limo': gfVersion = 'gf-car';
-			case 'mall' | 'mallEvil': gfVersion = 'gf-christmas';
-			case 'school': gfVersion = 'gf-pixel';
-			case 'schoolEvil': gfVersion = 'gf-pixel';
-			case 'tank': gfVersion = 'gf-tankmen';
-		}
-
 		if (SONG.song.toLowerCase() == 'stress') gfVersion = 'pico-speaker';
-		gf = new Character(400, 130, gfVersion);
 		gf.scrollFactor.set(0.95, 0.95);
 		if (gfVersion == 'pico-speaker') {
 			gf.x -= 50;
@@ -531,7 +573,6 @@ class PlayState extends MusicBeatState {
 				}
 			}
 		}
-		dad = new Character(100, 100, SONG.player2);
 		camPos = new FlxPoint(dad.getGraphicMidpoint().x, dad.getGraphicMidpoint().y);
 		switch (SONG.player2) {
 			case 'gf':
@@ -563,42 +604,7 @@ class PlayState extends MusicBeatState {
 				camPos.set(dad.getGraphicMidpoint().x + 300, dad.getGraphicMidpoint().y);
 			case "tankman": dad.y += 180;
 		}
-		boyfriend = new Boyfriend(770, 450, SONG.player1);
-		switch (curStage) {
-			case 'limo':
-				boyfriend.y -= 220;
-				boyfriend.x += 260;
-				resetFastCar();
-				add(fastCar);
-			case 'mall': boyfriend.x += 200;
-			case 'mallEvil':
-				boyfriend.x += 320;
-				dad.y -= 80;
-			case 'school':
-				boyfriend.x += 200;
-				boyfriend.y += 220;
-				gf.x += 180;
-				gf.y += 300;
-			case 'schoolEvil':
-				var evilTrail = new FlxTrail(dad, null, 4, 24, 0.3, 0.069);
-				add(evilTrail);
-
-				boyfriend.x += 200;
-				boyfriend.y += 220;
-				gf.x += 180;
-				gf.y += 300;
-			case 'tank':
-				gf.y += 10;
-				gf.x -= 30;
-				boyfriend.x += 40;
-				boyfriend.y += 0;
-				dad.y += 60;
-				dad.x -= 80;
-				if (gfVersion != 'pico-speaker') {
-					gf.x -= 170;
-					gf.y -= 75;
-				}
-		}
+		gf = new Character(gf.x, gf.y, gfVersion); // this is a hotfix i dont fucking know why :(
 		add(gf);
 
 		gfCutsceneLayer = new FlxTypedGroup<FlxAnimate>();
