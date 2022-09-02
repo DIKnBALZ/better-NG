@@ -254,9 +254,7 @@ class TitleState extends MusicBeatState {
 			case 3:		addMoreText('present');
 			case 4:		deleteCoolText();
 			case 5:		createCoolText(['in association', 'with']);
-			case 7:
-				addMoreText('inky and wizard');
-				addMoreText('and potentially more ppl');
+			case 7:		addMoreText('inky and wizard');
 			case 8:		deleteCoolText();
 			case 9:		createCoolText([curWacky[0]]);
 			case 11:	addMoreText(curWacky[1]);
