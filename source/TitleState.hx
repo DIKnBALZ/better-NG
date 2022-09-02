@@ -259,7 +259,7 @@ class TitleState extends MusicBeatState {
 			case 9:		createCoolText([curWacky[0]]);
 			case 11:	addMoreText(curWacky[1]);
 			case 12:	deleteCoolText();
-			case 13:	addMoreText('fnf');
+			case 13:	addMoreText('friday night funkin');
 			case 14:	addMoreText('better engine');
 			case 15: 	addMoreText('newgrounds edition');
 			case 16:	skipIntro();
