@@ -48,33 +48,56 @@ import openfl.utils.Assets as OpenFlAssets;
 
 using StringTools;
 class PlayState extends MusicBeatState {
-	public static var curStage:String = '';
-	public static var SONG:SwagSong;
+
+	// story mode shit
 	public static var isStoryMode:Bool = false;
 	public static var storyWeek:Int = 0;
 	public static var storyPlaylist:Array<String> = [];
 	public static var storyDifficulty:Int = 1;
+	var inCutscene:Bool = false;
+
+	// song shit
+	public static var SONG:SwagSong;
+	public static var seenCutscene:Bool = false;
 	public static var deathCounter:Int = 0;
 	public static var practiceMode:Bool = false;
-	public static var seenCutscene:Bool = false;
 	private var vocals:FlxSound;
 	private var vocalsFinished = false;
+	private var curSection:Int = 0;
+
+	// character shit
 	private var dad:Character;
 	private var gf:Character;
 	private var boyfriend:Boyfriend;
+	private var gfSpeed:Int = 1;
+
+	// i have no clue shit
+	
+	// stage shit
+	public static var daPixelZoom:Float = 6;
+	public static var curStage:String = '';
+	var defaultCamZoom:Float = 1.05;
+
+	// hud shit
+	var scoreTxt:FlxText;
+	
+
+
+	// organizing all the vars (kill me)
+
+
+
 	private var notes:FlxTypedGroup<Note>;
 	private var unspawnNotes:Array<Note> = [];
 	private var strumLine:FlxSprite;
-	private var curSection:Int = 0;
-	private var camFollow:FlxObject;
-	private var camPos:FlxPoint;
-	private static var prevCamFollow:FlxObject;
 	private var strumLineNotes:FlxTypedGroup<FlxSprite>;
 	private var playerStrums:FlxTypedGroup<FlxSprite>;
 	private var grpNoteSplashes:FlxTypedGroup<NoteSplash>;
+	private var camFollow:FlxObject;
+	private var camPos:FlxPoint;
+	private static var prevCamFollow:FlxObject;
 	private var camZooming:Bool = false;
 	private var curSong:String = "";
-	private var gfSpeed:Int = 1;
 	private var health:Float = 1;
 	private var combo:Int = 0;
 	private var healthBarBG:FlxSprite;
@@ -85,7 +108,6 @@ class PlayState extends MusicBeatState {
 	private var iconP2:HealthIcon;
 	private var camHUD:FlxCamera;
 	private var camGame:FlxCamera;
-	var halloweenLevel:Bool = false;
 	var dialogue:Array<String> = ['blah blah blah', 'coolswag'];
 	var halloweenBG:FlxSprite;
 	var isHalloween:Bool = false;
@@ -107,13 +129,10 @@ class PlayState extends MusicBeatState {
 	var tankmanRun:FlxTypedGroup<TankmenBG>;
 	var gfCutsceneLayer:FlxTypedGroup<FlxAnimate>;
 	var bfTankCutsceneLayer:FlxTypedGroup<FlxAnimate>;
-	var talking:Bool = true;
+
 	var songScore:Int = 0;
-	var scoreTxt:FlxText;
 	public static var campaignScore:Int = 0;
-	var defaultCamZoom:Float = 1.05;
-	public static var daPixelZoom:Float = 6;
-	var inCutscene:Bool = false;
+
 	#if desktop
 		var storyDifficultyText:String = "";
 		var iconRPC:String = "";
@@ -146,20 +165,7 @@ class PlayState extends MusicBeatState {
 		Conductor.mapBPMChanges(SONG);
 		Conductor.changeBPM(SONG.bpm);
 		foregroundSprites = new FlxTypedGroup<BGSprite>();
-		switch (SONG.song.toLowerCase()) {
-			case 'tutorial': dialogue = ["Hey you're pretty cute.", 'Use the arrow keys to keep up \nwith me singing.'];
-			case 'bopeebo': dialogue = [
-					'HEY!',
-					"You think you can just sing\nwith my daughter like that?",
-					"If you want to date her...",
-					"You're going to have to go \nthrough ME first!"
-				];
-			case 'fresh': dialogue = ["Not too shabby boy.", ""];
-			case 'dadbattle': dialogue = [
-					"gah you think you're hot stuff?",
-					"If you can beat me here...",
-					"Only then I will even CONSIDER letting you\ndate my daughter!"
-				];
+		switch (SONG.song.toLowerCase()) { // pretty sure theres a better autodetect way but i dont care enough rn lmao
 			case 'senpai': dialogue = CoolUtil.coolTextFile(Paths.txt('senpai/senpaiDialogue'));
 			case 'roses': dialogue = CoolUtil.coolTextFile(Paths.txt('roses/rosesDialogue'));
 			case 'thorns': dialogue = CoolUtil.coolTextFile(Paths.txt('thorns/thornsDialogue'));
@@ -190,7 +196,7 @@ class PlayState extends MusicBeatState {
 		switch (SONG.song.toLowerCase()) {
 			case 'spookeez' | 'monster' | 'south':
 				curStage = 'spooky';
-				halloweenLevel = true;
+				isHalloween = true;
 
 				halloweenBG = new FlxSprite(-200, -100);
 				halloweenBG.frames = Paths.getSparrowAtlas('halloween_bg');
@@ -199,10 +205,10 @@ class PlayState extends MusicBeatState {
 				halloweenBG.animation.play('idle');
 				halloweenBG.antialiasing = true;
 				add(halloweenBG);
-
-				isHalloween = true;
 			case 'pico' | 'blammed' | 'philly':
 				curStage = 'philly';
+				trainSound = new FlxSound().loadEmbedded(Paths.sound('train_passes'));
+				FlxG.sound.list.add(trainSound);
 
 				var bg:FlxSprite = new FlxSprite(-100).loadGraphic(Paths.image('philly/sky'));
 				bg.scrollFactor.set(0.1, 0.1);
@@ -235,17 +241,12 @@ class PlayState extends MusicBeatState {
 				phillyTrain = new FlxSprite(2000, 360).loadGraphic(Paths.image('philly/train'));
 				add(phillyTrain);
 
-				trainSound = new FlxSound().loadEmbedded(Paths.sound('train_passes'));
-				FlxG.sound.list.add(trainSound);
-
 				var street:FlxSprite = new FlxSprite(-40, streetBehind.y).loadGraphic(Paths.image('philly/street'));
 				add(street);
 			case 'milf' | 'satin-panties' | 'high':
 				curStage = 'limo';
-				defaultCamZoom = 0.90;
+				defaultCamZoom = 0.9;
 				gfVersion = 'gf-car';
-
-				trace('bruh 1');
 
 				var skyBG:FlxSprite = new FlxSprite(-120, -50).loadGraphic(Paths.image('limo/limoSunset'));
 				skyBG.scrollFactor.set(0.1, 0.1);
@@ -260,8 +261,6 @@ class PlayState extends MusicBeatState {
 
 				grpLimoDancers = new FlxTypedGroup<BackgroundDancer>();
 				add(grpLimoDancers);
-
-				trace('bruh 2');
 
 				for (i in 0...5) {
 					var dancer:BackgroundDancer = new BackgroundDancer((370 * i) + 130, bgLimo.y - 400);
@@ -278,19 +277,15 @@ class PlayState extends MusicBeatState {
 				limo.animation.play('drive');
 				limo.antialiasing = true;
 
-				trace('bruh 3');
-
 				fastCar = new FlxSprite(-300, 160).loadGraphic(Paths.image('limo/fastCarLol'));
 				
-				boyfriend.y -= 220; // HELP IT CRASHES SOMEWHERE HERE I DONT KNOW WHY FGRAHHHHH
+				boyfriend.y -= 220;
 				boyfriend.x += 260;
 				resetFastCar();
 				add(fastCar);
-
-				trace('yuh ay');
 			case 'cocoa' | 'eggnog':
 				curStage = 'mall';
-				defaultCamZoom = 0.80;
+				defaultCamZoom = 0.8;
 				gfVersion = 'gf-christmas';
 
 				var bg:FlxSprite = new FlxSprite(-1000, -500).loadGraphic(Paths.image('christmas/bgWalls'));
@@ -836,7 +831,6 @@ class PlayState extends MusicBeatState {
 		camHUD.visible = true;
 		generateStaticArrows(0);
 		generateStaticArrows(1);
-		talking = false;
 		startedCountdown = true;
 		Conductor.songPosition = 0;
 		Conductor.songPosition -= Conductor.crochet * 5;
