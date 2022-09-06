@@ -93,35 +93,26 @@ class PreferencesMenu extends Page
 		add(box);
 	}
 
-	public function prefToggle(identifier:String)
-	{
+	public function prefToggle(identifier:String) {
 		var value:Bool = preferences.get(identifier);
 		value = !value;
 		preferences.set(identifier, value);
 		checkboxes[items.selectedIndex].daValue = value;
 		trace('toggled? ' + Std.string(preferences.get(identifier)));
-		switch (identifier)
-		{
-			case 'auto-pause':
-				FlxG.autoPause = getPref('auto-pause');
+		switch (identifier) {
+			case 'auto-pause': FlxG.autoPause = getPref('auto-pause');
 			case 'fps-counter':
-				if (getPref('fps-counter'))
-					Lib.current.stage.addChild(Main.fpsCounter);
-				else
-					Lib.current.stage.removeChild(Main.fpsCounter);
+				if (getPref('fps-counter')) Lib.current.stage.addChild(Main.fpsCounter);
+				else Lib.current.stage.removeChild(Main.fpsCounter);
 		}
 	}
 
-	override function update(elapsed:Float)
-	{
+	override function update(elapsed:Float) {
 		super.update(elapsed);
 		menuCamera.followLerp = CoolUtil.camLerpShit(0.05);
-		items.forEach(function(item:MenuItem)
-		{
-			if (item == items.members[items.selectedIndex])
-				item.x = 150;
-			else
-				item.x = 120;
+		items.forEach(function(item:MenuItem) {
+			if (item == items.members[items.selectedIndex]) item.x = 150;
+			else item.x = 120;
 		});
 	}
 }
