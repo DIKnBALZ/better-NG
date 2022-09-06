@@ -123,7 +123,6 @@ class PlayState extends MusicBeatState {
 	var bottomBoppers:FlxSprite;
 	var santa:FlxSprite;
 	var bgGirls:BackgroundGirls;
-	var wiggleShit:WiggleEffect = new WiggleEffect();
 	var tankWatchtower:BGSprite;
 	var tankGround:BGSprite;
 	var tankmanRun:FlxTypedGroup<TankmenBG>;
@@ -1735,7 +1734,6 @@ class PlayState extends MusicBeatState {
 			Conductor.changeBPM(SONG.notes[Math.floor(curStep / 16)].bpm);
 			FlxG.log.add('CHANGED BPM!');
 		}
-		wiggleShit.update(Conductor.crochet);
 		if (PreferencesMenu.getPref('camera-zoom')) {
 			if (curSong.toLowerCase() == 'milf' && curBeat >= 168 && curBeat < 200 && camZooming && FlxG.camera.zoom < 1.35 || camZooming && FlxG.camera.zoom < 1.35 && curBeat % 4 == 0) {
 				FlxG.camera.zoom += 0.015;
