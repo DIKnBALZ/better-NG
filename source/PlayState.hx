@@ -515,6 +515,24 @@ class PlayState extends MusicBeatState {
 				
 				var tankdude3:BGSprite = new BGSprite('tank3', 1300, 1200, 3.5, 2.5, ['fg']);
 				foregroundSprites.add(tankdude3);
+
+				if (SONG.song.toLowerCase() == 'stress') gfVersion = 'pico-speaker';
+				if (gfVersion == 'pico-speaker') {
+					gf.x -= 50;
+					gf.y -= 200;
+					var tankmen:TankmenBG = new TankmenBG(20, 500, true);
+					tankmen.strumTime = 10;
+					tankmen.resetShit(20, 600, true);
+					tankmanRun.add(tankmen);
+					for (i in 0...TankmenBG.animationNotes.length) {
+						if (FlxG.random.bool(16)) {
+							var man:TankmenBG = tankmanRun.recycle(TankmenBG);
+							man.strumTime = TankmenBG.animationNotes[i][0];
+							man.resetShit(500, 200 + FlxG.random.int(50, 100), TankmenBG.animationNotes[i][1] < 2);
+							tankmanRun.add(man);
+						}
+					}
+				}
 				
 				gf.y += 10;
 				gf.x -= 30;
@@ -548,25 +566,7 @@ class PlayState extends MusicBeatState {
 				stageCurtains.active = false;
 				add(stageCurtains);
 		}
-
-		if (SONG.song.toLowerCase() == 'stress') gfVersion = 'pico-speaker';
 		gf.scrollFactor.set(0.95, 0.95);
-		if (gfVersion == 'pico-speaker') {
-			gf.x -= 50;
-			gf.y -= 200;
-			var tankmen:TankmenBG = new TankmenBG(20, 500, true);
-			tankmen.strumTime = 10;
-			tankmen.resetShit(20, 600, true);
-			tankmanRun.add(tankmen);
-			for (i in 0...TankmenBG.animationNotes.length) {
-				if (FlxG.random.bool(16)) {
-					var man:TankmenBG = tankmanRun.recycle(TankmenBG);
-					man.strumTime = TankmenBG.animationNotes[i][0];
-					man.resetShit(500, 200 + FlxG.random.int(50, 100), TankmenBG.animationNotes[i][1] < 2);
-					tankmanRun.add(man);
-				}
-			}
-		}
 		camPos = new FlxPoint(dad.getGraphicMidpoint().x, dad.getGraphicMidpoint().y);
 		switch (SONG.player2) {
 			case 'gf':
