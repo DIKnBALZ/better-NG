@@ -429,12 +429,7 @@ class PlayState extends MusicBeatState {
 				curStage = 'schoolEvil';
 				gfVersion = 'gf-pixel';
 
-				var waveEffectBG = new FlxWaveEffect(FlxWaveMode.ALL, 2, -1, 3, 2);
-				var waveEffectFG = new FlxWaveEffect(FlxWaveMode.ALL, 2, -1, 5, 2);
-				var posX = 400;
-				var posY = 200;
-
-				var bg:FlxSprite = new FlxSprite(posX, posY);
+				var bg:FlxSprite = new FlxSprite(400, 200);
 				bg.frames = Paths.getSparrowAtlas('weeb/animatedEvilSchool');
 				bg.animation.addByPrefix('idle', 'background 2', 24);
 				bg.animation.play('idle');
@@ -516,8 +511,8 @@ class PlayState extends MusicBeatState {
 				var tankdude3:BGSprite = new BGSprite('tank3', 1300, 1200, 3.5, 2.5, ['fg']);
 				foregroundSprites.add(tankdude3);
 
-				if (SONG.song.toLowerCase() == 'stress') gfVersion = 'pico-speaker';
-				if (gfVersion == 'pico-speaker') {
+				if (SONG.song.toLowerCase() == 'stress') {
+					gfVersion = 'pico-speaker';	
 					gf.x -= 50;
 					gf.y -= 200;
 					var tankmen:TankmenBG = new TankmenBG(20, 500, true);
@@ -540,7 +535,7 @@ class PlayState extends MusicBeatState {
 				boyfriend.y += 0;
 				dad.y += 60;
 				dad.x -= 80;
-				if (gfVersion != 'pico-speaker') {
+				if (gfVersion != 'pico-speaker') { // these lines are dumb plz do quick math later lmao
 					gf.x -= 170;
 					gf.y -= 75;
 				}
