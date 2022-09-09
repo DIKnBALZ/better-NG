@@ -7,32 +7,21 @@ import flixel.animation.FlxBaseAnimation;
 import flixel.graphics.frames.FlxAtlasFrames;
 
 using StringTools;
-
-class Character extends FlxSprite
-{
+class Character extends FlxSprite {
 	public var animOffsets:Map<String, Array<Dynamic>>;
 	public var debugMode:Bool = false;
-
 	public var isPlayer:Bool = false;
 	public var curCharacter:String = 'bf';
-
 	public var holdTimer:Float = 0;
-	
 	public var animationNotes:Array<Dynamic> = [];
-
-	public function new(x:Float, y:Float, ?character:String = "bf", ?isPlayer:Bool = false)
-	{
+	public function new(x:Float, y:Float, ?character:String = "bf", ?isPlayer:Bool = false) {
 		super(x, y);
-
 		animOffsets = new Map<String, Array<Dynamic>>();
 		curCharacter = character;
 		this.isPlayer = isPlayer;
-
 		var tex:FlxAtlasFrames;
 		antialiasing = true;
-
-		switch (curCharacter)
-		{
+		switch (curCharacter) {
 			case 'gf':
 				// GIRLFRIEND CODE
 				tex = Paths.getSparrowAtlas('characters/GF_assets');
@@ -473,22 +462,13 @@ class Character extends FlxSprite
 
 		dance();
 		animation.finish();
-
-		if (isPlayer)
-		{
+		if (isPlayer) {
 			flipX = !flipX;
-
-			// Doesn't flip for BF, since his are already in the right place???
-			if (!curCharacter.startsWith('bf'))
-			{
-				// var animArray
+			if (!curCharacter.startsWith('bf')) {
 				var oldRight = animation.getByName('singRIGHT').frames;
 				animation.getByName('singRIGHT').frames = animation.getByName('singLEFT').frames;
 				animation.getByName('singLEFT').frames = oldRight;
-
-				// IF THEY HAVE MISS ANIMATIONS??
-				if (animation.getByName('singRIGHTmiss') != null)
-				{
+				if (animation.getByName('singRIGHTmiss') != null) {
 					var oldMiss = animation.getByName('singRIGHTmiss').frames;
 					animation.getByName('singRIGHTmiss').frames = animation.getByName('singLEFTmiss').frames;
 					animation.getByName('singLEFTmiss').frames = oldMiss;
@@ -497,165 +477,91 @@ class Character extends FlxSprite
 		}
 	}
 
-	function loadMappedAnims()
-	{
+	function loadMappedAnims() {
 		var sections:Array<SwagSection> = Song.loadFromJson('picospeaker', 'stress').notes;
-		for (section in sections)
-		{
-			for (note in section.sectionNotes)
-			{
-				animationNotes.push(note);
-			}
-		}
+		for (section in sections) for (note in section.sectionNotes) animationNotes.push(note);
 		TankmenBG.animationNotes = animationNotes;
 		trace(animationNotes);
 		animationNotes.sort(sortAnims);
 	}
 
-	function sortAnims(x, y)
-	{
+	function sortAnims(x, y) {
 		return x[0] < y[0] ? -1 : x[0] > y[0] ? 1 : 0;
 	}
 
-	function quickAnimAdd(Name:String, Prefix:String)
-	{
+	function quickAnimAdd(Name:String, Prefix:String) {
 		animation.addByPrefix(Name, Prefix, 24, false);
 	}
 
-	function loadOffsetFile(char:String)
-	{
+	function loadOffsetFile(char:String) {
 		var offsets:Array<String> = CoolUtil.coolTextFile(Paths.getPath('images/characters/' + char + 'Offsets.txt', TEXT, null));
-		for (i in offsets)
-		{
+		for (i in offsets) {
 			var split = i.split(' ');
 			addOffset(split[0], Std.parseInt(split[1]), Std.parseInt(split[2]));
 		}
 	}
 
-	override function update(elapsed:Float)
-	{
-		if (!curCharacter.startsWith('bf'))
-		{
-			if (animation.curAnim.name.startsWith('sing'))
-			{
-				holdTimer += elapsed;
-			}
-
+	override function update(elapsed:Float) {
+		if (!curCharacter.startsWith('bf')) {
+			if (animation.curAnim.name.startsWith('sing')) holdTimer += elapsed;
 			var dadVar:Float = 4;
-
-			if (curCharacter == 'dad')
-				dadVar = 6.1;
-			if (holdTimer >= Conductor.stepCrochet * dadVar * 0.001)
-			{
+			if (curCharacter == 'dad') dadVar = 6.1;
+			if (holdTimer >= Conductor.stepCrochet * dadVar * 0.001) {
 				dance();
 				holdTimer = 0;
 			}
 		}
 		
-		if (curCharacter.endsWith('-car') && !animation.curAnim.name.startsWith('sing') && animation.curAnim.finished)
-		{
-			playAnim('idleHair');
-		}
-
-		switch (curCharacter)
-		{
-			case 'gf':
-				if (animation.curAnim.name == 'hairFall' && animation.curAnim.finished)
-					playAnim('danceRight');
+		if (curCharacter.endsWith('-car') && !animation.curAnim.name.startsWith('sing') && animation.curAnim.finished) playAnim('idleHair');
+		switch (curCharacter) {
+			case 'gf': if (animation.curAnim.name == 'hairFall' && animation.curAnim.finished) playAnim('danceRight');
 			case 'pico-speaker':
-				if (animationNotes.length > 0 && Conductor.songPosition > animationNotes[0][0])
-				{
-					trace("played shoot anim" + animationNotes[0][1]);
+				if (animationNotes.length > 0 && Conductor.songPosition > animationNotes[0][0]) {
 					var shotDirection:Int = 1;
-					if (animationNotes[0][1] >= 2)
-					{
-						shotDirection = 3;
-					}
+					if (animationNotes[0][1] >= 2) shotDirection = 3;
 					shotDirection += FlxG.random.int(0, 1);
-					
 					playAnim('shoot' + shotDirection, true);
 					animationNotes.shift();
 				}
-				if (animation.curAnim.finished)
-				{
-					playAnim(animation.curAnim.name, false, false, animation.curAnim.frames.length - 3);
-				}
+				if (animation.curAnim.finished) playAnim(animation.curAnim.name, false, false, animation.curAnim.frames.length - 3);
 		}
-
 		super.update(elapsed);
 	}
 
 	private var danced:Bool = false;
-
-	/**
-	 * FOR GF DANCING SHIT
-	 */
-	public function dance()
-	{
-		if (!debugMode)
-		{
-			switch (curCharacter)
-			{
+	public function dance() {
+		if (!debugMode) {
+			switch (curCharacter) {
 				case 'gf' | 'gf-car' | 'gf-christmas' | 'gf-pixel' | 'gf-tankmen':
-					if (!animation.curAnim.name.startsWith('hair'))
-					{
+					if (!animation.curAnim.name.startsWith('hair')) {
 						danced = !danced;
-
-						if (danced)
-							playAnim('danceRight');
-						else
-							playAnim('danceLeft');
+						if (danced) playAnim('danceRight');
+						else playAnim('danceLeft');
 					}
-				case 'pico-speaker':
-					// do nothing LOL
+				case 'pico-speaker': // do nothing LOL
 				case 'spooky':
 					danced = !danced;
-
-					if (danced)
-						playAnim('danceRight');
-					else
-						playAnim('danceLeft');
-				case 'tankman':
-					if (!animation.curAnim.name.endsWith('DOWN-alt'))
-						playAnim('idle');
-				default:
-					playAnim('idle');
+					if (danced) playAnim('danceRight');
+					else playAnim('danceLeft');
+				case 'tankman': if (!animation.curAnim.name.endsWith('DOWN-alt')) playAnim('idle');
+				default: playAnim('idle');
 			}
 		}
 	}
 
-	public function playAnim(AnimName:String, Force:Bool = false, Reversed:Bool = false, Frame:Int = 0):Void
-	{
+	public function playAnim(AnimName:String, Force:Bool = false, Reversed:Bool = false, Frame:Int = 0):Void {
 		animation.play(AnimName, Force, Reversed, Frame);
-
 		var daOffset = animOffsets.get(AnimName);
-		if (animOffsets.exists(AnimName))
-		{
-			offset.set(daOffset[0], daOffset[1]);
-		}
-		else
-			offset.set(0, 0);
-
-		if (curCharacter == 'gf')
-		{
-			if (AnimName == 'singLEFT')
-			{
-				danced = true;
-			}
-			else if (AnimName == 'singRIGHT')
-			{
-				danced = false;
-			}
-
-			if (AnimName == 'singUP' || AnimName == 'singDOWN')
-			{
-				danced = !danced;
-			}
+		if (animOffsets.exists(AnimName)) offset.set(daOffset[0], daOffset[1]);
+		else offset.set(0, 0);
+		if (curCharacter == 'gf') {
+			if (AnimName == 'singLEFT') danced = true;
+			else if (AnimName == 'singRIGHT') danced = false;
+			if (AnimName == 'singUP' || AnimName == 'singDOWN') danced = !danced;
 		}
 	}
 
-	public function addOffset(name:String, x:Float = 0, y:Float = 0)
-	{
+	public function addOffset(name:String, x:Float = 0, y:Float = 0) {
 		animOffsets[name] = [x, y];
 	}
 }

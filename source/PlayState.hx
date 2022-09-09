@@ -64,21 +64,21 @@ class PlayState extends MusicBeatState {
 
 	private var dad:Character;
 	private var gf:Character;
-	private var boyfriend:Boyfriend;
 	private var gfSpeed:Int = 1;
+	private var boyfriend:Boyfriend;
 	
 	public static var daPixelZoom:Float = 6;
 	public static var curStage:String = '';
 	var defaultCamZoom:Float = 1.05;
 
 	var scoreTxt:FlxText;
-
 	private var notes:FlxTypedGroup<Note>;
 	private var unspawnNotes:Array<Note> = [];
 	private var strumLine:FlxSprite;
 	private var strumLineNotes:FlxTypedGroup<FlxSprite>;
 	private var playerStrums:FlxTypedGroup<FlxSprite>;
 	private var grpNoteSplashes:FlxTypedGroup<NoteSplash>;
+
 	private var camFollow:FlxObject;
 	private var camPos:FlxPoint;
 	private static var prevCamFollow:FlxObject;
@@ -1532,12 +1532,8 @@ class PlayState extends MusicBeatState {
 			});
 			if (perfectMode) goodNoteHit(possibleNotes[0]);
 			else if (possibleNotes.length > 0) {
-				for (i in 0...controlArray.length) {
-					if (controlArray[i] && !ignoreList.contains(i)) badNoteHit();
-				}
-				for (possibleNote in possibleNotes) {
-					if (controlArray[possibleNote.noteData]) goodNoteHit(possibleNote);
-				}
+				for (i in 0...controlArray.length) if (controlArray[i] && !ignoreList.contains(i)) badNoteHit();
+				for (possibleNote in possibleNotes) if (controlArray[possibleNote.noteData]) goodNoteHit(possibleNote);
 			}
 			else badNoteHit();
 		}
