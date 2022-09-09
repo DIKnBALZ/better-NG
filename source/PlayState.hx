@@ -48,15 +48,12 @@ import openfl.utils.Assets as OpenFlAssets;
 
 using StringTools;
 class PlayState extends MusicBeatState {
-
-	// story mode shit
 	public static var isStoryMode:Bool = false;
 	public static var storyWeek:Int = 0;
 	public static var storyPlaylist:Array<String> = [];
 	public static var storyDifficulty:Int = 1;
 	var inCutscene:Bool = false;
 
-	// song shit
 	public static var SONG:SwagSong;
 	public static var seenCutscene:Bool = false;
 	public static var deathCounter:Int = 0;
@@ -65,27 +62,16 @@ class PlayState extends MusicBeatState {
 	private var vocalsFinished = false;
 	private var curSection:Int = 0;
 
-	// character shit
 	private var dad:Character;
 	private var gf:Character;
 	private var boyfriend:Boyfriend;
 	private var gfSpeed:Int = 1;
-
-	// i have no clue shit
 	
-	// stage shit
 	public static var daPixelZoom:Float = 6;
 	public static var curStage:String = '';
 	var defaultCamZoom:Float = 1.05;
 
-	// hud shit
 	var scoreTxt:FlxText;
-	
-
-
-	// organizing all the vars (kill me)
-
-
 
 	private var notes:FlxTypedGroup<Note>;
 	private var unspawnNotes:Array<Note> = [];
@@ -110,7 +96,6 @@ class PlayState extends MusicBeatState {
 	private var camGame:FlxCamera;
 	var dialogue:Array<String> = ['blah blah blah', 'coolswag'];
 	var halloweenBG:FlxSprite;
-	var isHalloween:Bool = false;
 	var foregroundSprites:FlxTypedGroup<BGSprite>;
 	var phillyCityLights:FlxTypedGroup<FlxSprite>;
 	var phillyTrain:FlxSprite;
@@ -195,7 +180,6 @@ class PlayState extends MusicBeatState {
 		switch (SONG.song.toLowerCase()) {
 			case 'spookeez' | 'monster' | 'south':
 				curStage = 'spooky';
-				isHalloween = true;
 
 				halloweenBG = new FlxSprite(-200, -100);
 				halloweenBG.frames = Paths.getSparrowAtlas('halloween_bg');
@@ -206,6 +190,7 @@ class PlayState extends MusicBeatState {
 				add(halloweenBG);
 			case 'pico' | 'blammed' | 'philly':
 				curStage = 'philly';
+
 				trainSound = new FlxSound().loadEmbedded(Paths.sound('train_passes'));
 				FlxG.sound.list.add(trainSound);
 
@@ -244,8 +229,8 @@ class PlayState extends MusicBeatState {
 				add(street);
 			case 'milf' | 'satin-panties' | 'high':
 				curStage = 'limo';
-				defaultCamZoom = 0.9;
 				gfVersion = 'gf-car';
+				defaultCamZoom = 0.9;
 
 				var skyBG:FlxSprite = new FlxSprite(-120, -50).loadGraphic(Paths.image('limo/limoSunset'));
 				skyBG.scrollFactor.set(0.1, 0.1);
@@ -513,8 +498,8 @@ class PlayState extends MusicBeatState {
 
 				if (SONG.song.toLowerCase() == 'stress') {
 					gfVersion = 'pico-speaker';	
-					gf.x -= 50;
-					gf.y -= 200;
+					gf.x += 120;
+					gf.y -= 125;
 					var tankmen:TankmenBG = new TankmenBG(20, 500, true);
 					tankmen.strumTime = 10;
 					tankmen.resetShit(20, 600, true);
@@ -529,16 +514,12 @@ class PlayState extends MusicBeatState {
 					}
 				}
 				
-				gf.y += 10;
-				gf.x -= 30;
+				gf.y -= 65;
+				gf.x -= 200;
 				boyfriend.x += 40;
 				boyfriend.y += 0;
 				dad.y += 60;
 				dad.x -= 80;
-				if (gfVersion != 'pico-speaker') { // these lines are dumb plz do quick math later lmao
-					gf.x -= 170;
-					gf.y -= 75;
-				}
 			default:
 				defaultCamZoom = 0.9;
 				curStage = 'stage';
@@ -1700,15 +1681,6 @@ class PlayState extends MusicBeatState {
 		startedMoving = false;
 	}
 
-	function lightningStrikeShit():Void {
-		FlxG.sound.play(Paths.soundRandom('thunder_', 1, 2));
-		halloweenBG.animation.play('lightning');
-		lightningStrikeBeat = curBeat;
-		lightningOffset = FlxG.random.int(8, 24);
-		boyfriend.playAnim('scared', true);
-		gf.playAnim('scared', true);
-	}
-
 	override function stepHit() {
 		super.stepHit();
 		if (Math.abs(FlxG.sound.music.time - (Conductor.songPosition - Conductor.offset)) > 20
@@ -1780,7 +1752,14 @@ class PlayState extends MusicBeatState {
 					trainStart();
 				}
 		}
-		if (isHalloween && FlxG.random.bool(10) && curBeat > lightningStrikeBeat + lightningOffset) lightningStrikeShit();
+		if (curStage == 'spooky' && FlxG.random.bool(10) && curBeat > lightningStrikeBeat + lightningOffset) {
+			FlxG.sound.play(Paths.soundRandom('thunder_', 1, 2));
+			halloweenBG.animation.play('lightning');
+			lightningStrikeBeat = curBeat;
+			lightningOffset = FlxG.random.int(8, 24);
+			boyfriend.playAnim('scared', true);
+			gf.playAnim('scared', true);
+		}
 	}
 	var curLight:Int = 0;
 }
