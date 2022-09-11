@@ -14,30 +14,20 @@ import flixel.tweens.FlxEase;
 import flixel.tweens.FlxTween;
 import flixel.util.FlxColor;
 
-class PauseSubState extends MusicBeatSubstate
-{
+class PauseSubState extends MusicBeatSubstate {
 	var grpMenuShit:FlxTypedGroup<Alphabet>;
-
 	var pauseOG:Array<String> = ['Resume', 'Restart Song', 'Change Difficulty', 'Toggle Practice Mode', 'Exit to menu'];
 	var difficultyChoices:Array<String> = ['EASY', 'NORMAL', 'HARD', 'BACK'];
-
 	var menuItems:Array<String> = [];
 	var curSelected:Int = 0;
-
 	var pauseMusic:FlxSound;
-
 	var practiceText:FlxText;
-
-	public function new(x:Float, y:Float)
-	{
+	public function new(x:Float, y:Float) {
 		super();
-
 		menuItems = pauseOG;
-
 		pauseMusic = new FlxSound().loadEmbedded(Paths.music('breakfast'), true, true);
 		pauseMusic.volume = 0;
 		pauseMusic.play(false, FlxG.random.int(0, Std.int(pauseMusic.length / 2)));
-
 		FlxG.sound.list.add(pauseMusic);
 
 		var bg:FlxSprite = new FlxSprite().makeGraphic(FlxG.width, FlxG.height, FlxColor.BLACK);
@@ -89,56 +79,31 @@ class PauseSubState extends MusicBeatSubstate
 
 		grpMenuShit = new FlxTypedGroup<Alphabet>();
 		add(grpMenuShit);
-
 		regenMenu();
 	}
 
-	private function regenMenu()
-	{
-		while (grpMenuShit.members.length > 0)
-		{
-			grpMenuShit.remove(grpMenuShit.members[0], true);
-		}
-
-		for (i in 0...menuItems.length)
-		{
+	private function regenMenu() {
+		while (grpMenuShit.members.length > 0) grpMenuShit.remove(grpMenuShit.members[0], true);
+		for (i in 0...menuItems.length) {
 			var menuItem:Alphabet = new Alphabet(0, (70 * i) + 30, menuItems[i], true, false);
 			menuItem.isMenuItem = true;
 			menuItem.targetY = i;
 			grpMenuShit.add(menuItem);
 		}
-
 		curSelected = 0;
-
 		changeSelection();
 	}
 
-	override function update(elapsed:Float)
-	{
-		if (pauseMusic.volume < 0.5)
-			pauseMusic.volume += 0.01 * elapsed;
-
+	override function update(elapsed:Float) {
+		if (pauseMusic.volume < 0.5) pauseMusic.volume += 0.01 * elapsed;
 		super.update(elapsed);
 
-		var upP = controls.UI_UP_P;
-		var downP = controls.UI_DOWN_P;
-		var accepted = controls.ACCEPT;
+		if (controls.UI_UP_P) changeSelection(-1);
+		if (controls.UI_DOWN_P) changeSelection(1);
 
-		if (upP)
-		{
-			changeSelection(-1);
-		}
-		if (downP)
-		{
-			changeSelection(1);
-		}
-
-		if (accepted)
-		{
+		if (controls.ACCEPT) {
 			var daSelected:String = menuItems[curSelected];
-
-			switch (daSelected)
-			{
+			switch (daSelected) {
 				case "Resume":
 					close();
 				case "Restart Song":
@@ -152,11 +117,8 @@ class PauseSubState extends MusicBeatSubstate
 				case "Exit to menu":
 					PlayState.seenCutscene = false;
 					PlayState.deathCounter = 0;
-					if (PlayState.isStoryMode)
-						FlxG.switchState(new StoryMenuState());
-					else
-						FlxG.switchState(new FreeplayState());
-				
+					if (PlayState.isStoryMode) FlxG.switchState(new StoryMenuState());
+					else FlxG.switchState(new FreeplayState());
 				case "EASY" | "NORMAL" | "HARD":
 					PlayState.SONG = Song.loadFromJson(Highscore.formatSong(PlayState.SONG.song.toLowerCase(), curSelected), PlayState.SONG.song.toLowerCase());
 					PlayState.storyDifficulty = curSelected;
@@ -166,46 +128,26 @@ class PauseSubState extends MusicBeatSubstate
 					regenMenu();
 			}
 		}
-
-		if (FlxG.keys.justPressed.J)
-		{
-			// for reference later!
-			// PlayerSettings.player1.controls.replaceBinding(Control.LEFT, Keys, FlxKey.J, null);
-		}
 	}
 
-	override function destroy()
-	{
+	override function destroy() {
 		pauseMusic.destroy();
-
 		super.destroy();
 	}
 
-	function changeSelection(change:Int = 0):Void
-	{
+	function changeSelection(change:Int = 0):Void {
 		FlxG.sound.play(Paths.sound('scrollMenu'), 0.4);
 		curSelected += change;
 
-		if (curSelected < 0)
-			curSelected = menuItems.length - 1;
-		if (curSelected >= menuItems.length)
-			curSelected = 0;
+		if (curSelected < 0) curSelected = menuItems.length - 1;
+		if (curSelected >= menuItems.length) curSelected = 0;
 
 		var bullShit:Int = 0;
-
-		for (item in grpMenuShit.members)
-		{
+		for (item in grpMenuShit.members) {
 			item.targetY = bullShit - curSelected;
 			bullShit++;
-
 			item.alpha = 0.6;
-			// item.setGraphicSize(Std.int(item.width * 0.8));
-
-			if (item.targetY == 0)
-			{
-				item.alpha = 1;
-				// item.setGraphicSize(Std.int(item.width));
-			}
+			if (item.targetY == 0) item.alpha = 1;
 		}
 	}
 }
