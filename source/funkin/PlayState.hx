@@ -67,10 +67,6 @@ class PlayState extends MusicBeatState {
 	private var gf:Character;
 	private var gfSpeed:Int = 1;
 	private var boyfriend:Boyfriend;
-	
-	public static var daPixelZoom:Float = 6;
-	public static var curStage:String = '';
-	var defaultCamZoom:Float = 1.05;
 
 	var scoreTxt:FlxText;
 	private var notes:FlxTypedGroup<Note>;
@@ -96,6 +92,11 @@ class PlayState extends MusicBeatState {
 	private var camHUD:FlxCamera;
 	private var camGame:FlxCamera;
 	var dialogue:Array<String> = ['blah blah blah', 'coolswag'];
+	
+	public static var daPixelZoom:Float = 6;
+	public static var curStage:String = '';
+	var defaultCamZoom:Float = 1.05;
+
 	var halloweenBG:FlxSprite;
 	var foregroundSprites:FlxTypedGroup<BGSprite>;
 	var phillyCityLights:FlxTypedGroup<FlxSprite>;
@@ -349,8 +350,8 @@ class PlayState extends MusicBeatState {
 				dad.y -= 80;
 			case 'senpai' | 'roses':
 				curStage = 'school';
-				var repositionShit = -200;
 				gfVersion = 'gf-pixel';
+				var repositionShit = -200;
 
 				var bgSky = new FlxSprite().loadGraphic(Paths.image('weeb/weebSky'));
 				bgSky.scrollFactor.set(0.1, 0.1);

@@ -24,9 +24,8 @@ class Character extends FlxSprite {
 		antialiasing = true;
 		switch (curCharacter) {
 			case 'gf':
-				// GIRLFRIEND CODE
-				tex = Paths.getSparrowAtlas('characters/GF_assets');
-				frames = tex;
+				frames = Paths.getSparrowAtlas('characters/GF_assets');
+
 				quickAnimAdd('cheer', 'GF Cheer');
 				quickAnimAdd('singLEFT', 'GF left note');
 				quickAnimAdd('singRIGHT', 'GF Right Note');
@@ -476,6 +475,16 @@ class Character extends FlxSprite {
 				}
 			}
 		}
+	}
+
+	function addPrefixCool(name:String, prefix:String, framerate:Int, loop:Bool, offsets:Array<Float>) {
+		animation.addByPrefix(name, prefix, framerate, loop);
+		animOffsets[name] = [offsets[0], offsets[1]];
+	}
+
+	function addIndicesCool(name:String, prefix:String, indices:Array<Int>, framerate:Int, loop:Bool, offsets:Array<Float>) {
+		animation.addByIndices(name, prefix, indices, "", framerate, loop);
+		animOffsets[name] = [offsets[0], offsets[1]];
 	}
 
 	function loadMappedAnims() {
