@@ -213,8 +213,17 @@ class Note extends FlxSprite
 		{
 			canBeHit = false;
 
-			if (strumTime <= Conductor.songPosition)
+			if (strumTime <= Conductor.songPosition) {
 				wasGoodHit = true;
+				animation.play('pressed');
+				centerOffsets();
+				offset.x -= 13;
+				offset.y -= 13;
+			}
+
+			if (animation.finished && animation.name == "pressed")
+				animation.play('static');
+				centerOffsets();
 		}
 
 		if (tooLate)
