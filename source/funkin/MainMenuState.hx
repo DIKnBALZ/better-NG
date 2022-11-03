@@ -33,7 +33,7 @@ class MainMenuState extends MusicBeatState
 	var menuItems:MainMenuList;
 
 	#if !switch
-	var optionShit:Array<String> = ['story mode', 'freeplay', 'donate', 'options'];
+	var optionShit:Array<String> = ['story mode', 'freeplay', 'mods', 'donate', 'options'];
 	#else
 	var optionShit:Array<String> = ['story mode', 'freeplay'];
 	#end
@@ -51,6 +51,8 @@ class MainMenuState extends MusicBeatState
 		FlxTransitionableState.defaultTransIn = new TransitionData(TransitionType.TILES, FlxColor.BLACK, 0.35);
 		FlxTransitionableState.defaultTransOut = new TransitionData(TransitionType.TILES, FlxColor.BLACK, 0.35);
 
+		FlxG.camera.zoom = FlxG.camera.zoom - 0.2;
+
 		if (!FlxG.sound.music.playing)
 		{
 			FlxG.sound.playMusic(Paths.music('freakyMenu'));
@@ -61,7 +63,7 @@ class MainMenuState extends MusicBeatState
 		var bg:FlxSprite = new FlxSprite(null, null, Paths.image('menuBG'));
 		bg.scrollFactor.x = 0;
 		bg.scrollFactor.y = 0.17;
-		bg.setGraphicSize(Std.int(bg.width * 1.2));
+		bg.setGraphicSize(Std.int(bg.width * 1.4));
 		bg.updateHitbox();
 		bg.screenCenter();
 		bg.antialiasing = true;
@@ -101,6 +103,10 @@ class MainMenuState extends MusicBeatState
 		menuItems.createItem(null, null, "freeplay", function()
 		{
 			startExitState(new FreeplayState());
+		});
+		menuItems.createItem(null, null, "mods", function()
+		{
+			startExitState(new ModMenuState());
 		});
 		if (VideoState.seenVideo)
 		{

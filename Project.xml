@@ -93,9 +93,9 @@
 	<assets path="assets/week6"    library="week6"    exclude="*.mp3|*.mp4" unless="web"/>
 	<assets path="assets/week7"    library="week7"    exclude="*.ogg" if="web"/>
 	<assets path="assets/week7"    library="week7"    exclude="*.mp3|*.mp4" unless="web"/>
+	<assets path='assets/mods' library="mods" embed='false' unless="mobile"/>
 
 	<assets path='art/readme.txt' rename='do NOT readme.txt' />
-	<assets path='mods' library="mods" embed='false' unless="mobile"/>
 	
 	<assets path="CHANGELOG.md" rename='changelog.txt'/>
 
