@@ -635,7 +635,7 @@ class PlayState extends MusicBeatState {
 		scoreTxt.scrollFactor.set();
 		add(scoreTxt);
 
-		timerText = new FlxText(FlxG.width / 2 - 40, FlxG.height / 12 + 10, 0, "0:00", 120);
+		timerText = new FlxText(FlxG.width / 2 - 40,  !PreferencesMenu.getPref('downscroll') ? (FlxG.height / 12 + 10) : -(FlxG.height / 12 + 10), 0, "0:00", 120);
 		timerText.setFormat(Paths.font("funkin.otf"), 60, FlxColor.WHITE, CENTER, OUTLINE, FlxColor.BLACK);
 		timerText.borderSize = 5;
 		timerText.scrollFactor.set();
@@ -1567,24 +1567,17 @@ class PlayState extends MusicBeatState {
 			new FlxTimer().start(5 / 60, function(tmr:FlxTimer) {
 				boyfriend.stunned = false;
 			});
-			switch (direction) {
-				case 0: boyfriend.playAnim('singLEFTmiss', true);
-				case 1: boyfriend.playAnim('singDOWNmiss', true);
-				case 2: boyfriend.playAnim('singUPmiss', true);
-				case 3: boyfriend.playAnim('singRIGHTmiss', true);
-			}
+			var shit = ["LEFT", "DOWN", "UP", "RIGHT"];
+			boyfriend.playAnim('sing${shit[direction]}miss', true);
 		}
 	}
 
 	function badNoteHit() {
-		var leftP = controls.NOTE_LEFT_P;
-		var downP = controls.NOTE_DOWN_P;
-		var upP = controls.NOTE_UP_P;
-		var rightP = controls.NOTE_RIGHT_P;
-		if (leftP) noteMiss(0);
-		if (downP) noteMiss(1);
-		if (upP) noteMiss(2);
-		if (rightP) noteMiss(3);
+		var leftP = controls.NOTE_LEFT_P; var downP = controls.NOTE_DOWN_P; var upP = controls.NOTE_UP_P; var rightP = controls.NOTE_RIGHT_P;
+		var shit = [leftP, downP, upP, rightP];
+		for (i in 0...shit.length)
+			if (shit[i])
+				noteMiss(i);
 	}
 
 	function goodNoteHit(note:Note):Void {
