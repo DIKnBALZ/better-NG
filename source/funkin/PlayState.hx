@@ -1,5 +1,6 @@
 package funkin;
 
+import flixel.util.FlxStringUtil;
 #if desktop
 	import funkin.Discord.DiscordClient;
 #end
@@ -52,13 +53,14 @@ class PlayState extends MusicBeatState {
 	public var gfSpeed:Int = 1;
 	public var boyfriend:Boyfriend;
 
-	var scoreTxt:FlxText;
+	public var scoreTxt:FlxText;
 	public var notes:FlxTypedGroup<Note>;
 	public var unspawnNotes:Array<Note> = [];
 	public var strumLine:FlxSprite;
 	public var strumLineNotes:FlxTypedGroup<FlxSprite>;
 	public var playerStrums:FlxTypedGroup<FlxSprite>;
 	public var grpNoteSplashes:FlxTypedGroup<NoteSplash>;
+	public var timerText:FlxText;
 
 	public var camFollow:FlxObject;
 	public var camPos:FlxPoint;
@@ -627,11 +629,17 @@ class PlayState extends MusicBeatState {
 		iconP2.y = healthBar.y - (iconP2.height / 2);
 		add(iconP2);
 
-		scoreTxt = new FlxText(healthBarBG.x, healthBarBG.y + 30, 0, "", 30);
+		scoreTxt = new FlxText(healthBarBG.x, healthBarBG.y + 30, 0, "", 60);
 		scoreTxt.setFormat(Paths.font("funkin.otf"), 30, FlxColor.WHITE, CENTER, OUTLINE, FlxColor.BLACK);
-		scoreTxt.borderSize = 5;
+		scoreTxt.borderSize = 2.5;
 		scoreTxt.scrollFactor.set();
 		add(scoreTxt);
+
+		timerText = new FlxText(FlxG.width / 2 - 40, FlxG.height / 12 + 10, 0, "0:00", 120);
+		timerText.setFormat(Paths.font("funkin.otf"), 60, FlxColor.WHITE, CENTER, OUTLINE, FlxColor.BLACK);
+		timerText.borderSize = 5;
+		timerText.scrollFactor.set();
+		add(timerText);
 
 		grpNoteSplashes.cameras = [camHUD];
 		strumLineNotes.cameras = [camHUD];
@@ -641,6 +649,7 @@ class PlayState extends MusicBeatState {
 		iconP1.cameras = [camHUD];
 		iconP2.cameras = [camHUD];
 		scoreTxt.cameras = [camHUD];
+		timerText.cameras = [camHUD];
 		doof.cameras = [camHUD];
 		startingSong = true;
 		if (isStoryMode && !seenCutscene) {
@@ -930,9 +939,11 @@ class PlayState extends MusicBeatState {
 					unspawnNotes.push(sustainNote);
 					sustainNote.mustPress = gottaHitNote;
 					if (sustainNote.mustPress) sustainNote.x += FlxG.width / 2; // general offset
+					sustainNote.x += 39.5;
 				}
 				swagNote.mustPress = gottaHitNote;
 				if (swagNote.mustPress) swagNote.x += FlxG.width / 2; // general offset
+				swagNote.x += 39.5;
 			}
 			daBeats += 1;
 		}
@@ -1030,7 +1041,7 @@ class PlayState extends MusicBeatState {
 			if (player == 1) playerStrums.add(babyArrow);
 			babyArrow.animation.play('static');
 			babyArrow.x += 50;
-			babyArrow.x += ((FlxG.width / 2) * player);
+			babyArrow.x += ((FlxG.width / 2) * player) + 55;
 			strumLineNotes.add(babyArrow);
 		}
 	}
@@ -1114,6 +1125,8 @@ class PlayState extends MusicBeatState {
 				}
 			}
 		}
+
+		timerText.text = FlxStringUtil.formatTime((FlxG.sound.music.length - FlxG.sound.music.time) / 1000);
 
 		switch (curStage) {
 			case 'philly':
