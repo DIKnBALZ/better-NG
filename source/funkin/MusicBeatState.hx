@@ -1,12 +1,10 @@
 package funkin;
 
 import funkin.Conductor.BPMChangeEvent;
-
-import flixel.FlxG;
+import flixel.util.FlxColor;
 import flixel.addons.transition.FlxTransitionableState;
 import flixel.addons.ui.FlxUIState;
-import flixel.math.FlxRect;
-import flixel.util.FlxTimer;
+import flixel.addons.transition.TransitionData;
 
 class MusicBeatState extends FlxUIState
 {
@@ -19,6 +17,9 @@ class MusicBeatState extends FlxUIState
 
 	override function create()
 	{
+		FlxTransitionableState.defaultTransIn = new TransitionData(TransitionType.TILES, FlxColor.BLACK, 0.35);
+		FlxTransitionableState.defaultTransOut = new TransitionData(TransitionType.TILES, FlxColor.BLACK, 0.35);
+
 		if (transIn != null)
 			trace('reg ' + transIn.region);
 

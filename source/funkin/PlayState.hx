@@ -9,23 +9,14 @@ import funkin.ui.PreferencesMenu;
 import funkin.shaderslmfao.ColorSwap;
 import funkin.Section.SwagSection;
 import funkin.Song.SwagSong;
-
-import flixel.FlxBasic;
+import flixel.addons.transition.TransitionData;
 import flixel.FlxCamera;
 import flixel.FlxG;
-import flixel.FlxGame;
 import flixel.FlxObject;
 import flixel.FlxSprite;
-import flixel.FlxState;
 import flixel.FlxSubState;
-import flixel.addons.display.FlxGridOverlay;
 import flixel.addons.effects.FlxTrail;
-import flixel.addons.effects.FlxTrailArea;
-import flixel.addons.effects.chainable.FlxEffectSprite;
-import flixel.addons.effects.chainable.FlxWaveEffect;
 import flixel.addons.transition.FlxTransitionableState;
-import flixel.graphics.atlas.FlxAtlas;
-import flixel.graphics.frames.FlxAtlasFrames;
 import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.math.FlxMath;
 import flixel.math.FlxPoint;
@@ -35,16 +26,9 @@ import flixel.text.FlxText;
 import flixel.tweens.FlxEase;
 import flixel.tweens.FlxTween;
 import flixel.ui.FlxBar;
-import flixel.util.FlxCollision;
 import flixel.util.FlxColor;
 import flixel.util.FlxSort;
-import flixel.util.FlxStringUtil;
 import flixel.util.FlxTimer;
-import haxe.Json;
-import lime.utils.Assets;
-import openfl.display.BlendMode;
-import openfl.display.StageQuality;
-import openfl.filters.ShaderFilter;
 import openfl.utils.Assets as OpenFlAssets;
 
 using StringTools;
@@ -59,38 +43,39 @@ class PlayState extends MusicBeatState {
 	public static var seenCutscene:Bool = false;
 	public static var deathCounter:Int = 0;
 	public static var practiceMode:Bool = false;
-	private var vocals:FlxSound;
-	private var vocalsFinished = false;
-	private var curSection:Int = 0;
+	public var vocals:FlxSound;
+	public var vocalsFinished = false;
+	public var curSection:Int = 0;
 
-	private var dad:Character;
-	private var gf:Character;
-	private var gfSpeed:Int = 1;
-	private var boyfriend:Boyfriend;
+	public var dad:Character;
+	public var gf:Character;
+	public var gfSpeed:Int = 1;
+	public var boyfriend:Boyfriend;
 
 	var scoreTxt:FlxText;
-	private var notes:FlxTypedGroup<Note>;
-	private var unspawnNotes:Array<Note> = [];
-	private var strumLine:FlxSprite;
-	private var strumLineNotes:FlxTypedGroup<FlxSprite>;
-	private var playerStrums:FlxTypedGroup<FlxSprite>;
-	private var grpNoteSplashes:FlxTypedGroup<NoteSplash>;
+	public var notes:FlxTypedGroup<Note>;
+	public var unspawnNotes:Array<Note> = [];
+	public var strumLine:FlxSprite;
+	public var strumLineNotes:FlxTypedGroup<FlxSprite>;
+	public var playerStrums:FlxTypedGroup<FlxSprite>;
+	public var grpNoteSplashes:FlxTypedGroup<NoteSplash>;
 
-	private var camFollow:FlxObject;
-	private var camPos:FlxPoint;
-	private static var prevCamFollow:FlxObject;
-	private var camZooming:Bool = false;
-	private var curSong:String = "";
-	private var health:Float = 1;
-	private var combo:Int = 0;
-	private var healthBarBG:FlxSprite;
-	private var healthBar:FlxBar;
-	private var generatedMusic:Bool = false;
-	private var startingSong:Bool = false;
-	private var iconP1:HealthIcon;
-	private var iconP2:HealthIcon;
-	private var camHUD:FlxCamera;
-	private var camGame:FlxCamera;
+	public var camFollow:FlxObject;
+	public var camPos:FlxPoint;
+	public static var prevCamFollow:FlxObject;
+	public var camZooming:Bool = false;
+	public var curSong:String = "";
+	public var health:Float = 1;
+	public var combo:Int = 0;
+	public var misses:Int = 0;
+	public var healthBarBG:FlxSprite;
+	public var healthBar:FlxBar;
+	public var generatedMusic:Bool = false;
+	public var startingSong:Bool = false;
+	public var iconP1:HealthIcon;
+	public var iconP2:HealthIcon;
+	public var camHUD:FlxCamera;
+	public var camGame:FlxCamera;
 	var dialogue:Array<String> = ['blah blah blah', 'coolswag'];
 	
 	public static var daPixelZoom:Float = 6;
@@ -128,6 +113,10 @@ class PlayState extends MusicBeatState {
 	#end
 
 	override public function create() {
+
+		FlxTransitionableState.defaultTransIn = new TransitionData(TransitionType.TILES, FlxColor.BLACK, 0.35);
+		FlxTransitionableState.defaultTransOut = new TransitionData(TransitionType.TILES, FlxColor.BLACK, 0.35);
+
 		camGame = new FlxCamera();
 		camHUD = new FlxCamera();
 		camHUD.bgColor.alpha = 0;
@@ -630,11 +619,6 @@ class PlayState extends MusicBeatState {
 		healthBar.createFilledBar(0xFFFF0000, 0xFF66FF33);
 		add(healthBar);
 
-		scoreTxt = new FlxText(healthBarBG.x + healthBarBG.width - 190, healthBarBG.y + 30, 0, "", 20);
-		scoreTxt.setFormat(Paths.font("vcr.ttf"), 16, FlxColor.WHITE, RIGHT, OUTLINE, FlxColor.BLACK);
-		scoreTxt.scrollFactor.set();
-		add(scoreTxt);
-
 		iconP1 = new HealthIcon(SONG.player1, true);
 		iconP1.y = healthBar.y - (iconP1.height / 2);
 		add(iconP1);
@@ -642,6 +626,12 @@ class PlayState extends MusicBeatState {
 		iconP2 = new HealthIcon(SONG.player2, false);
 		iconP2.y = healthBar.y - (iconP2.height / 2);
 		add(iconP2);
+
+		scoreTxt = new FlxText(healthBarBG.x, healthBarBG.y + 30, 0, "", 30);
+		scoreTxt.setFormat(Paths.font("funkin.otf"), 30, FlxColor.WHITE, CENTER, OUTLINE, FlxColor.BLACK);
+		scoreTxt.borderSize = 5;
+		scoreTxt.scrollFactor.set();
+		add(scoreTxt);
 
 		grpNoteSplashes.cameras = [camHUD];
 		strumLineNotes.cameras = [camHUD];
@@ -895,7 +885,7 @@ class PlayState extends MusicBeatState {
 	}
 
 	var debugNum:Int = 0;
-	private function generateSong():Void {
+	public function generateSong():Void {
 		var songData = SONG;
 		Conductor.changeBPM(songData.bpm);
 		curSong = songData.song;
@@ -958,7 +948,7 @@ class PlayState extends MusicBeatState {
 		return Obj1.strumTime < Obj2.strumTime ? Sort : Obj1.strumTime > Obj2.strumTime ? -Sort : 0;
 	}
 
-	private function generateStaticArrows(player:Int):Void {
+	public function generateStaticArrows(player:Int):Void {
 		for (i in 0...4) {
 			var babyArrow:FlxSprite = new FlxSprite(0, strumLine.y);
 			var colorSwap:ColorSwap = new ColorSwap();
@@ -1100,7 +1090,7 @@ class PlayState extends MusicBeatState {
 		}
 	}
 
-	private var paused:Bool = false;
+	public var paused:Bool = false;
 	var startedCountdown:Bool = false;
 	var canPause:Bool = true;
 	var cameraRightSide:Bool = false;
@@ -1138,7 +1128,7 @@ class PlayState extends MusicBeatState {
 			case 'tank': moveTank();
 		}
 		super.update(elapsed);
-		scoreTxt.text = "Score:" + songScore;
+		scoreTxt.text = 'Score: $songScore, Misses: $misses';
 		if (controls.PAUSE && startedCountdown && canPause) {
 			persistentUpdate = false;
 			persistentDraw = true;
@@ -1361,7 +1351,7 @@ class PlayState extends MusicBeatState {
 	}
 
 	var endingSong:Bool = false;
-	private function popUpScore(strumtime:Float, daNote:Note):Void {
+	public function popUpScore(strumtime:Float, daNote:Note):Void {
 		var noteDiff:Float = Math.abs(strumtime - Conductor.songPosition);
 		vocals.volume = 1;
 
@@ -1466,7 +1456,7 @@ class PlayState extends MusicBeatState {
 		curSection += 1;
 	}
 
-	private function cameraMovement():Void {
+	public function cameraMovement():Void {
 		if (camFollow.x != dad.getMidpoint().x + 150 && !cameraRightSide) {
 			camFollow.setPosition(dad.getMidpoint().x + 150, dad.getMidpoint().y - 100);
 			switch (dad.curCharacter) {
@@ -1494,7 +1484,7 @@ class PlayState extends MusicBeatState {
 		}
 	}
 
-	private function keyShit():Void {
+	public function keyShit():Void {
 		var holdingArray:Array<Bool> = [controls.NOTE_LEFT, controls.NOTE_DOWN, controls.NOTE_UP, controls.NOTE_RIGHT];
 		var controlArray:Array<Bool> = [controls.NOTE_LEFT_P, controls.NOTE_DOWN_P, controls.NOTE_UP_P, controls.NOTE_RIGHT_P];
 		var releaseArray:Array<Bool> = [controls.NOTE_LEFT_R, controls.NOTE_DOWN_R, controls.NOTE_UP_R, controls.NOTE_RIGHT_R];
@@ -1555,6 +1545,7 @@ class PlayState extends MusicBeatState {
 	function noteMiss(direction:Int = 1):Void {
 		if (!boyfriend.stunned) {
 			health -= 0.04;
+			misses ++;
 			if (combo > 5 && gf.animOffsets.exists('sad')) gf.playAnim('sad');
 			combo = 0;
 			if (!practiceMode) songScore -= 10;

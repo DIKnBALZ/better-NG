@@ -23,6 +23,7 @@ class PreferencesMenu extends Page
 		menuCamera.bgColor = FlxColor.TRANSPARENT;
 		camera = menuCamera;
 		add(items = new TextMenuList());
+		createPrefItem('ghost tapping', 'ghost-tapping', true);
 		createPrefItem('naughtyness', 'censor-naughty', true);
 		createPrefItem('downscroll', 'downscroll', false);
 		createPrefItem('flashing menu', 'flashing-menu', true);
@@ -46,6 +47,7 @@ class PreferencesMenu extends Page
 
 	public static function initPrefs()
 	{
+		preferenceCheck('ghost-tapping', true);
 		preferenceCheck('censor-naughty', true);
 		preferenceCheck('downscroll', false);
 		preferenceCheck('flashing-menu', true);
