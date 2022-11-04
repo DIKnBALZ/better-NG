@@ -51,8 +51,6 @@ class MainMenuState extends MusicBeatState
 		FlxTransitionableState.defaultTransIn = new TransitionData(TransitionType.TILES, FlxColor.BLACK, 0.35);
 		FlxTransitionableState.defaultTransOut = new TransitionData(TransitionType.TILES, FlxColor.BLACK, 0.35);
 
-		FlxG.camera.zoom = FlxG.camera.zoom - 0.2;
-
 		if (!FlxG.sound.music.playing)
 		{
 			FlxG.sound.playMusic(Paths.music('freakyMenu'));
@@ -126,7 +124,8 @@ class MainMenuState extends MusicBeatState
 		{
 			var item:MainMenuItem = menuItems.members[i];
 			item.x = FlxG.width / 2;
-			item.y = pos + (160 * i);
+			item.y = pos + (160 * i) + (i > (menuItems.length / 2) ? -30 : 30);
+			item.scale.set(1 * ((menuItems.length / 4) * 0.8), 1 * ((menuItems.length / 4) * 0.8));
 		}
 
 		FlxG.camera.follow(camFollow, null, 0.06);

@@ -70,6 +70,7 @@ class PlayState extends MusicBeatState {
 	public var health:Float = 1;
 	public var combo:Int = 0;
 	public var misses:Int = 0;
+	public var accuracy:Float = 0;
 	public var healthBarBG:FlxSprite;
 	public var healthBar:FlxBar;
 	public var generatedMusic:Bool = false;
@@ -1141,7 +1142,7 @@ class PlayState extends MusicBeatState {
 			case 'tank': moveTank();
 		}
 		super.update(elapsed);
-		scoreTxt.text = 'Score: $songScore, Misses: $misses';
+		scoreTxt.text = 'Score: $songScore | Misses: $misses';
 		if (controls.PAUSE && startedCountdown && canPause) {
 			persistentUpdate = false;
 			persistentDraw = true;
