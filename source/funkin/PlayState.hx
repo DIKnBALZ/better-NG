@@ -651,7 +651,7 @@ class PlayState extends MusicBeatState {
 		scoreTxt.scrollFactor.set();
 		add(scoreTxt);
 
-		timerText = new FlxText(FlxG.width / 2 - 40,  !PreferencesMenu.getPref('downscroll') ? (FlxG.height / 12 + 10) : -(FlxG.height / 12 + 10), 0, "0:00", 120);
+		timerText = new FlxText(FlxG.width / 2 - 40,  !PreferencesMenu.getPref('downscroll') ? 20 : (FlxG.height - 70), 0, "0:00", 120);
 		timerText.setFormat(Paths.font("funkin.otf"), 60, FlxColor.WHITE, CENTER, OUTLINE, FlxColor.BLACK);
 		timerText.borderSize = 5;
 		timerText.scrollFactor.set();
