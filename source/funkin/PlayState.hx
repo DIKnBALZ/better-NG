@@ -73,8 +73,8 @@ class PlayState extends MusicBeatState {
 	public var accuracy:Float = 0;
 	public var healthBarBG:FlxSprite;
 	public var healthBar:FlxBar;
-	public var timerBarBG:FlxSprite;
-	public var timerBar:FlxBar;
+	// public var timerBarBG:FlxSprite;
+	// public var timerBar:FlxBar;
 	public var generatedMusic:Bool = false;
 	public var startingSong:Bool = false;
 	public var iconP1:HealthIcon;
@@ -170,6 +170,7 @@ class PlayState extends MusicBeatState {
 		#end
 
 		var gfVersion:String = 'gf';
+		if (SONG.player3 != null) gfVersion = SONG.player3;
 		gf = new Character(400, 130, gfVersion);
 		dad = new Character(100, 100, SONG.player2);
 		boyfriend = new Boyfriend(770, 450, SONG.player1);
@@ -624,18 +625,17 @@ class PlayState extends MusicBeatState {
 		healthBar.createFilledBar(0xFFFF0000, 0xFF66FF33);
 		add(healthBar);
 
-		timerBarBG = new FlxSprite(0, 0).loadGraphic(Paths.image('healthBar'));
-		timerBarBG.scale.set(FlxG.width, 1);
-		timerBarBG.updateHitbox();
-		timerBarBG.color.brightness = 0;
-		timerBarBG.scrollFactor.set();
-		add(timerBarBG);
-		if (PreferencesMenu.getPref('downscroll')) timerBarBG.y = (FlxG.height - timerBarBG.height);
+		// timerBarBG = new FlxSprite(0, 0).loadGraphic(Paths.image('healthBar'));
+		// timerBarBG.scale.set(FlxG.width, 1);
+		// timerBarBG.updateHitbox();
+		// timerBarBG.scrollFactor.set();
+		// add(timerBarBG);
+		// if (PreferencesMenu.getPref('downscroll')) timerBarBG.y = (FlxG.height - timerBarBG.height);
 
-		timerBar = new FlxBar(timerBarBG.x + 4, timerBarBG.y + 4, RIGHT_TO_LEFT, Std.int(timerBarBG.width - 8), Std.int(timerBarBG.height - 8), this, "", 0, FlxG.sound.music.length);
-		timerBar.scrollFactor.set();
-		timerBar.createFilledBar(0xFFFFFFFF, 0xFF000000);
-		add(timerBar);
+		// timerBar = new FlxBar(timerBarBG.x + 4, timerBarBG.y + 4, RIGHT_TO_LEFT, Std.int(timerBarBG.width - 8), Std.int(timerBarBG.height - 8), this, "", 0, 100);
+		// timerBar.scrollFactor.set();
+		// timerBar.createFilledBar(0xFFFFFFFF, 0xFF000000);
+		// add(timerBar);
 
 		iconP1 = new HealthIcon(SONG.player1, true);
 		iconP1.y = healthBar.y - (iconP1.height / 2);
@@ -651,7 +651,7 @@ class PlayState extends MusicBeatState {
 		scoreTxt.scrollFactor.set();
 		add(scoreTxt);
 
-		timerText = new FlxText(FlxG.width / 2 - 40,  !PreferencesMenu.getPref('downscroll') ? 20 : (FlxG.height - 70), 0, "0:00", 120);
+		timerText = new FlxText(FlxG.width / 2 - 40,  strumLine.y, 0, "0:00", 120);
 		timerText.setFormat(Paths.font("funkin.otf"), 60, FlxColor.WHITE, CENTER, OUTLINE, FlxColor.BLACK);
 		timerText.borderSize = 5;
 		timerText.scrollFactor.set();
@@ -662,8 +662,8 @@ class PlayState extends MusicBeatState {
 		notes.cameras = [camHUD];
 		healthBar.cameras = [camHUD];
 		healthBarBG.cameras = [camHUD];
-		timerBar.cameras = [camHUD];
-		timerBarBG.cameras = [camHUD];
+		// timerBar.cameras = [camHUD];
+		// timerBarBG.cameras = [camHUD];
 		iconP1.cameras = [camHUD];
 		iconP2.cameras = [camHUD];
 		scoreTxt.cameras = [camHUD];
@@ -1144,9 +1144,9 @@ class PlayState extends MusicBeatState {
 			}
 		}
 
-		timerText.text = FlxStringUtil.formatTime((FlxG.sound.music.length - FlxG.sound.music.time) / 1000);
-		timerBar.setRange(0, FlxG.sound.music.length);
-		timerBar.value = FlxG.sound.music.time;
+		timerText.text = FlxStringUtil.formatTime((FlxG.sound.music.length - Conductor.songPosition) / 1000);
+		// timerBar.setRange(0, FlxG.sound.music.length);
+		// timerBar.value = Conductor.songPosition;
 
 		switch (curStage) {
 			case 'philly':

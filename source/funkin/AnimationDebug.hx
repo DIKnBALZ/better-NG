@@ -8,8 +8,12 @@ import flixel.addons.display.FlxGridOverlay;
 import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.text.FlxText;
 import flixel.util.FlxColor;
+import flixel.FlxCamera;
+import flixel.ui.FlxButton;
+import openfl.net.FileReference;
 
 class AnimationDebug extends FlxState {
+	var _file:FileReference;
 	var bf:Boyfriend;
 	var dad:Character;
 	var char:Character;
@@ -20,6 +24,7 @@ class AnimationDebug extends FlxState {
 	var isDad:Bool = true;
 	var daAnim:String = 'spooky';
 	var camFollow:FlxObject;
+	var camHUD:FlxCamera;
 	public function new(daAnim:String = 'spooky') {
 		super();
 		this.daAnim = daAnim;
@@ -27,8 +32,12 @@ class AnimationDebug extends FlxState {
 
 	override function create() {
 		FlxG.sound.music.stop();
-		var gridBG:FlxSprite = FlxGridOverlay.create(10, 10);
+		camHUD = new FlxCamera();
+		camHUD.bgColor.alpha = 0;
+		FlxG.cameras.add(camHUD, false);
+		var gridBG:FlxSprite = FlxGridOverlay.create(5, 5);
 		gridBG.scrollFactor.set(0.5, 0.5);
+		gridBG.scale.set(5, 5);
 		add(gridBG);
 		if (daAnim == 'bf') isDad = false;
 		if (isDad) {
@@ -49,17 +58,28 @@ class AnimationDebug extends FlxState {
 
 		dumbTexts = new FlxTypedGroup<FlxText>();
 		add(dumbTexts);
+		dumbTexts.cameras = [camHUD];
 
 		textAnim = new FlxText(300, 16);
 		textAnim.size = 26;
 		textAnim.scrollFactor.set();
 		add(textAnim);
+		textAnim.setFormat(Paths.font("funkin.otf"), 40, FlxColor.WHITE, CENTER, OUTLINE, FlxColor.BLACK);
+		textAnim.borderSize = 2.5;
+		textAnim.cameras = [camHUD];
 
 		genBoyOffsets();
 		camFollow = new FlxObject(0, 0, 2, 2);
 		camFollow.screenCenter();
 		add(camFollow);
 		FlxG.camera.follow(camFollow);
+
+		// im gonna do this later
+		// var saveButton:FlxButton = new FlxButton(textAnim.x, textAnim.y + 40, "Save", function()
+		// {
+		// 	saveOffsets();
+		// });
+
 		super.create();
 	}
 
@@ -67,8 +87,11 @@ class AnimationDebug extends FlxState {
 		var daLoop:Int = 0;
 		for (anim => offsets in char.animOffsets) {
 			var text:FlxText = new FlxText(10, 20 + (18 * daLoop), 0, anim + ": " + offsets, 15);
+			text.setFormat(Paths.font("funkin.otf"), 30, FlxColor.BLUE, CENTER, OUTLINE, FlxColor.BLACK);
+			text.borderSize = 2.5;
+			text.borderQuality = 1;
 			text.scrollFactor.set();
-			text.color = FlxColor.BLUE;
+			text.cameras = [camHUD];
 			dumbTexts.add(text);
 
 			if (pushList) animList.push(anim);
@@ -89,12 +112,12 @@ class AnimationDebug extends FlxState {
 		if (FlxG.keys.justPressed.Q) FlxG.camera.zoom -= 0.25;
 
 		if (FlxG.keys.pressed.I || FlxG.keys.pressed.J || FlxG.keys.pressed.K || FlxG.keys.pressed.L) {
-			if (FlxG.keys.pressed.I) camFollow.velocity.y = -90;
-			else if (FlxG.keys.pressed.K) camFollow.velocity.y = 90;
+			if (FlxG.keys.pressed.I) camFollow.velocity.y = -150 / FlxG.camera.zoom;
+			else if (FlxG.keys.pressed.K) camFollow.velocity.y = 150 / FlxG.camera.zoom;
 			else camFollow.velocity.y = 0;
 
-			if (FlxG.keys.pressed.J) camFollow.velocity.x = -90;
-			else if (FlxG.keys.pressed.L) camFollow.velocity.x = 90;
+			if (FlxG.keys.pressed.J) camFollow.velocity.x = -150 / FlxG.camera.zoom;
+			else if (FlxG.keys.pressed.L) camFollow.velocity.x = 150 / FlxG.camera.zoom;
 			else camFollow.velocity.x = 0;
 		}
 		else camFollow.velocity.set();
@@ -107,6 +130,8 @@ class AnimationDebug extends FlxState {
 			updateTexts();
 			genBoyOffsets(false);
 		}
+
+		if (FlxG.keys.justPressed.ESCAPE) FlxG.switchState(new PlayState());
 
 		var upP = FlxG.keys.anyJustPressed([UP]);
 		var rightP = FlxG.keys.anyJustPressed([RIGHT]);
