@@ -24,6 +24,7 @@ class Note extends FlxSprite
 	public var wasGoodHit:Bool = false;
 	public var willMiss:Bool = false;
 	public var altNote:Bool = false;
+	public var playedHitsound:Bool = false;
 	public var prevNote:Note;
 
 	public var sustainLength:Float = 0;

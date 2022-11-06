@@ -81,6 +81,8 @@ class ChartingState extends MusicBeatState
 
 	var leftIcon:HealthIcon;
 	var rightIcon:HealthIcon;
+	
+	var playedSound:Array<Bool> = [];
 
 	override function create()
 	{
@@ -121,6 +123,7 @@ class ChartingState extends MusicBeatState
 				player1: 'bf',
 				player2: 'dad',
 				player3: 'gf',
+				stage: 'stage',
 				speed: 1,
 				validScore: false
 			};
@@ -172,6 +175,11 @@ class ChartingState extends MusicBeatState
 		add(curRenderedSustains);
 
 		changeSection();
+		
+		for (i in 0...8) {
+			playedSound.push(false);
+		}
+
 		super.create();
 	}
 
@@ -227,6 +235,7 @@ class ChartingState extends MusicBeatState
 		stepperBPM.name = 'song_bpm';
 
 		var characters:Array<String> = CoolUtil.coolTextFile(Paths.txt('characterList'));
+		var stages:Array<String> = CoolUtil.coolTextFile(Paths.txt('stageList'));
 
 		var player1DropDown = new FlxUIDropDownMenu(10, 100, FlxUIDropDownMenu.makeStrIdLabelArray(characters, true), function(character:String)
 		{
@@ -250,6 +259,13 @@ class ChartingState extends MusicBeatState
 
 		player3DropDown.selectedLabel = _song.player3;
 
+		var stageDropDown = new FlxUIDropDownMenu(10, 125, FlxUIDropDownMenu.makeStrIdLabelArray(stages, true), function(stage:String)
+		{
+			_song.stage = stages[Std.parseInt(stage)];
+		});
+
+		stageDropDown.selectedLabel = _song.stage;
+
 		var tab_group_song = new FlxUI(null, UI_box);
 		tab_group_song.name = "Song";
 		tab_group_song.add(UI_songTitle);
@@ -265,6 +281,7 @@ class ChartingState extends MusicBeatState
 		tab_group_song.add(player1DropDown);
 		tab_group_song.add(player2DropDown);
 		tab_group_song.add(player3DropDown);
+		tab_group_song.add(stageDropDown);
 
 		UI_box.addGroup(tab_group_song);
 		UI_box.scrollFactor.set();
@@ -508,6 +525,26 @@ class ChartingState extends MusicBeatState
 
 		FlxG.watch.addQuick('daBeat', curBeat);
 		FlxG.watch.addQuick('daStep', curStep);
+
+		// curRenderedNotes.forEachAlive(function(note:Note)
+		// {
+		// 	if (note.strumTime < Conductor.songPosition)
+		// 	{
+		// 		var data:Int = note.noteData % 4;
+
+		// 		if (FlxG.sound.music.playing && !playedSound[data] && data > -1 && note.strumTime >= Conductor.lastSongPos)
+		// 		{
+		// 			FlxG.sound.play(Paths.sound('hitsound'));
+		// 			playedSound[data] = true;
+		// 		}
+		// 		// if (FlxG.sound.music.playing && data > -1 && note.strumTime >= lastSongPos)
+		// 		// {
+		// 		// 	leftStrums[data].animation.play("confirm", true);
+		// 		// 	leftStrums[data].offset.x = strumOffsets[0] + 10;
+		// 		// 	leftStrums[data].offset.y = strumOffsets[1] + 10;
+		// 		// }
+		// 	}
+		// });
 
 		if (FlxG.mouse.justPressed)
 		{
