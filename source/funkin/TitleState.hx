@@ -1,5 +1,6 @@
 package funkin;
 
+import flixel.system.scaleModes.RatioScaleMode;
 #if desktop
 	import funkin.Discord.DiscordClient;
 #end
@@ -47,6 +48,7 @@ class TitleState extends MusicBeatState {
 	#end
 
 	override public function create():Void {
+		FlxG.scaleMode = new RatioScaleMode(true);
 		#if polymod
 			polymod.Polymod.init({modRoot: "mods", dirs: ['introMod'], framework: OPENFL});
 		#end
