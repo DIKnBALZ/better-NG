@@ -1521,13 +1521,7 @@ class PlayState extends MusicBeatState {
 		// timerBar.value = Conductor.songPosition;
 
 		canMiss = Main.fpsCounter.currentFPS < (FlxG.drawFramerate / 1.5) ? false : true;
-		// if (!canMiss) {
-		// 	lagTime = FlxG.sound.music.time;
-		// }
-		// else if (canMiss && lagTime != 0) {
-		// 	FlxG.sound.music.time = FlxG.sound.music.time - (FlxG.sound.music.time - lagTime);
-		// 	lagTime = 0;
-		// }
+		if (!canMiss) FlxG.sound.music.time -= 500;
 
 		switch (curStage) {
 			case 'philly':
@@ -1696,7 +1690,7 @@ class PlayState extends MusicBeatState {
 				if (PreferencesMenu.getPref('downscroll')) doKill = daNote.y > FlxG.height;
 				if (doKill) {
 					if (daNote.tooLate || !daNote.wasGoodHit) {
-						if (!daNote.isSustainNote) noteMiss(daNote.noteData);
+						if (!daNote.isSustainNote && canMiss) noteMiss(daNote.noteData);
 					}
 					daNote.active = false;
 					daNote.visible = false;
@@ -1791,12 +1785,12 @@ class PlayState extends MusicBeatState {
 			daRating = 'shit';
 			score = 50;
 			doSplash = false;
-			noteMiss(daNote.noteData);
+			if (canMiss) noteMiss(daNote.noteData);
 		} else if (noteDiff > Conductor.safeZoneOffset * 0.75) {
 			daRating = 'bad';
 			score = 100;
 			doSplash = false;
-			noteMiss(daNote.noteData);
+			if (canMiss) noteMiss(daNote.noteData);
 		} else if (noteDiff > Conductor.safeZoneOffset * 0.2) {
 			daRating = 'good';
 			score = 200;
@@ -1989,7 +1983,7 @@ class PlayState extends MusicBeatState {
 		var shit = [leftP, downP, upP, rightP];
 		for (i in 0...shit.length)
 			if (shit[i] && !PreferencesMenu.getPref("ghost-tapping"))
-				noteMiss(i);
+				if (canMiss) noteMiss(i);
 	}
 
 	function goodNoteHit(note:Note):Void {
